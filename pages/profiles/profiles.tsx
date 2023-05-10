@@ -1,12 +1,25 @@
-import {Scientists, Biologys, Geochemists, Physicians} from "./profile";
+import {
+	Scientists,
+	Biologys,
+	Geochemists,
+	Physicians,
+	Actress,
+	Engineer,
+	ChineseEnginer,
+	Chemist
+} from "./profile";
 
 export default function Profiles() {
 	return (
-		<div>
+		<>
 			<Scientists />
 			<Biologys />
 			<Geochemists />
 			<Physicians />
-		</div>
+			<Actress />
+			<Engineer />
+			<ChineseEnginer />
+			<Chemist />
+		</>
 	);
 }
