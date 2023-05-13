@@ -1,8 +1,10 @@
 import Image from "next/image";
+import {format} from "date-fns";
 import Avatar from "./hijos/Avatar";
+import {es} from "date-fns/locale";
 import Profiles from "./profiles/profiles";
 import {Engineer} from "./profiles/profile";
-import {getImageUrls2} from "./hijos/utils";
+import {getImageUrls2, getImageUrls} from "./hijos/utils";
 import {Fragment} from "react";
 import {ReactElement, ReactNode} from "react";
 import biology from "../assets/AkliluLemma.jpg";
@@ -10,7 +12,7 @@ import physician from "../assets/AlanL-Hart.jpg";
 import scientits from "../assets/KatherineJohnson.jpg";
 import profilePic from "../assets/KatherineJohnson.jpg";
 import geochemist from "../assets/KatsukoSaruhashi.jpg";
-import {Person, Children, ProfileProps, People, peoples, recipes, recipe} from "./models/models";
+import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie} from "./models/models";
 
 // function Profile() {
 // 	return (
@@ -661,19 +663,184 @@ import {Person, Children, ProfileProps, People, peoples, recipes, recipe} from "
 
 // ----------------------------------------------------------------------------------
 
-const poem = {
-	lines: ["I write, erase, rewrite", "Erase again, and then", "A poppy blooms."]
-};
+// const poem = {
+// 	lines: ["I write, erase, rewrite", "Erase again, and then", "A poppy blooms."]
+// };
 
-export default function Poem(): ReactNode {
-	return (
-		<article>
-			{poem.lines.map((line: string, index: number) => (
-				<Fragment key={index}>
-					{index > 0 && <hr />}
-					<p>{line}</p>
-				</Fragment>
-			))}
-		</article>
-	);
-}
+// export default function Poem(): ReactNode {
+// 	return (
+// 		<article>
+// 			{poem.lines.map((line: string, index: number) => (
+// 				<Fragment key={index}>
+// 					{index > 0 && <hr />}
+// 					<p>{line}</p>
+// 				</Fragment>
+// 			))}
+// 		</article>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Recipe({drinkers}: {drinkers: number}): ReactElement {
+// 	return (
+// 		<ol>
+// 			<li>Boil {drinkers} cups of water.</li>
+// 			<li>
+// 				Add {drinkers} spoons of tea and {0.5 * drinkers} spoons of spice.
+// 			</li>
+// 			<li>Add {0.5 * drinkers} cups of milk to boil and sugar to taste.</li>
+// 		</ol>
+// 	);
+// }
+
+// export default function App(): ReactNode {
+// 	return (
+// 		<section>
+// 			<h1>Spiced Chai Recipe</h1>
+// 			<h2>For two</h2>
+// 			<Recipe drinkers={2} />
+// 			<h2>For a gathering</h2>
+// 			<Recipe drinkers={4} />
+// 		</section>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Cup({guest}: {guest: number}): ReactElement {
+// 	return <h2>Tea cup for guest #{guest}</h2>;
+// }
+
+// export default function TeaSet(): ReactNode {
+// 	return (
+// 		<>
+// 			<Cup guest={1} />
+// 			<Cup guest={2} />
+// 			<Cup guest={3} />
+// 		</>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Cup({guest}: {guest: number}) {
+// 	return <h2>Tea cup for guest #{guest}</h2>;
+// }
+
+// export default function TeaGathering() {
+// 	let cups = [];
+// 	for (let i = 1; i <= 12; i++) {
+// 		cups.push(
+// 			<Cup
+// 				key={i}
+// 				guest={i}
+// 			/>
+// 		);
+// 	}
+// 	return cups;
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function capitalizeFirstLetter(chain: string) {
+// 	return chain.charAt(0).toUpperCase() + chain.slice(1);
+// }
+
+// function Clock({time}: {time: Date}): ReactElement {
+// 	const month = capitalizeFirstLetter(format(time, "MMMM", {locale: es}));
+// 	const formattedDate = format(time, `d, yyyy - hh:mm:ss a`, {locale: es});
+// 	return <h1>{`${month} ${formattedDate}`}</h1>;
+// }
+
+// function App(): ReactNode {
+// 	return <Clock time={new Date()} />;
+// }
+
+// export default App;
+
+// ----------------------------------------------------------------------------------
+
+// function Panel({children}: {children: React.ReactNode}): ReactElement {
+// 	return <button>{children}</button>;
+// }
+
+// function Profile({person}: {person: Person}): ReactElement {
+// 	return (
+// 		<Panel>
+// 			<Header currentPerson={person} />
+// 			<Avata currentPerson={person} />
+// 		</Panel>
+// 	);
+// }
+
+// function Header({currentPerson}: {currentPerson: Person}): ReactElement {
+// 	return <h1>{currentPerson.name}</h1>;
+// }
+
+// function Avata({currentPerson}: {currentPerson: Person}): ReactElement {
+// 	return (
+// 		<Image
+// 			className="avatar"
+// 			src={getImageUrls(currentPerson.imageId)}
+// 			alt={currentPerson.name}
+// 			width={50}
+// 			height={50}
+// 		/>
+// 	);
+// }
+
+// function App(): ReactNode {
+// 	return (
+// 		<>
+// 			<Profile
+// 				person={{
+// 					name: "Subrahmanyan Chandrasekhar",
+// 					imageId: "lrWQx8l"
+// 				}}
+// 			/>
+// 			<Profile
+// 				person={{
+// 					name: "Creola Katherine Johnson",
+// 					imageId: "MK3eW3A"
+// 				}}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// export default App;
+
+// ----------------------------------------------------------------------------------
+
+// export default function StoryTray({
+// 	stories = [
+// 		{
+// 			id: "Carola",
+// 			label: "Amen"
+// 		},
+// 		{
+// 			id: "Pitan",
+// 			label: "Rocale"
+// 		}
+// 	]
+// }: {
+// 	stories: storie[];
+// }) {
+// 	let storiesToDisplay = stories.slice();
+
+// 	storiesToDisplay.push({
+// 		id: "create",
+// 		label: "Create Story"
+// 	});
+
+// 	return (
+// 		<ul>
+// 			{storiesToDisplay.map((story) => (
+// 				<li key={story.id}>{story.label}</li>
+// 			))}
+// 		</ul>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------

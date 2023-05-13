@@ -91,3 +91,8 @@ export const recipes: recipe[] = [
 		ingredients: ["chickpeas", "olive oil", "garlic cloves", "lemon", "tahini"]
 	}
 ];
+
+export interface storie {
+	id: string;
+	label: string;
+}
