@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"git": "git pull origin develop && git push origin develop && git checkout master && git merge develop && git pull origin master && git push origin master && git checkout develop"
+		"git": "bash git-commit.sh"
 	},
 	"dependencies": {
 		"@types/node": "18.16.3",
