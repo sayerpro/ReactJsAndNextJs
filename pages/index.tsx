@@ -1,18 +1,33 @@
 import Image from "next/image";
 import {format} from "date-fns";
-import Avatar from "./hijos/Avatar";
 import {es} from "date-fns/locale";
+import Avatar from "./hijos/Avatar";
+import WritableDraft, {useImmer} from "use-immer";
 import Profiles from "./profiles/profiles";
 import {Engineer} from "./profiles/profile";
-import {getImageUrls2, getImageUrls} from "./hijos/utils";
-import {Fragment} from "react";
 import {ReactElement, ReactNode} from "react";
 import biology from "../assets/AkliluLemma.jpg";
 import physician from "../assets/AlanL-Hart.jpg";
 import scientits from "../assets/KatherineJohnson.jpg";
 import profilePic from "../assets/KatherineJohnson.jpg";
 import geochemist from "../assets/KatsukoSaruhashi.jpg";
-import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie} from "./models/models";
+import {getImageUrls2, getImageUrls} from "./hijos/utils";
+import {Fragment, useState, FormEvent, ChangeEvent} from "react";
+import {
+	Person,
+	Children,
+	ProfileProps,
+	People,
+	peoples,
+	recipes,
+	recipe,
+	storie,
+	sculptureList,
+	Instant,
+	Lista
+} from "./models/models";
+
+// ----------------------------------------------------------------------------------
 
 // function Profile() {
 // 	return (
@@ -844,3 +859,399 @@ import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie
 // }
 
 // ----------------------------------------------------------------------------------
+
+// function App(): ReactNode {
+// 	return (
+// 		<Toolbar
+// 			onPlayMovie={() => alert("Playing!")}
+// 			onUploadImage={() => alert("Uploading!")}
+// 		/>
+// 	);
+// }
+
+// function Toolbar({onPlayMovie, onUploadImage}: {onPlayMovie: () => void; onUploadImage: () => void}): ReactElement {
+// 	return (
+// 		<div>
+// 			<Button onClick={onPlayMovie}>Play Movie</Button>
+// 			<Button onClick={onUploadImage}>Upload Image</Button>
+// 		</div>
+// 	);
+// }
+
+// function Button({onClick, children}: {onClick: () => void; children: string}): ReactElement {
+// 	return <button onClick={onClick}>{children}</button>;
+// }
+
+// export default App;
+
+// ----------------------------------------------------------------------------------
+
+// function Gallery() {
+// 	const [index, setIndex] = useState(0);
+// 	const [showMore, setShowMore] = useState(false);
+// 	const hasNext = index <= sculptureList.length - 1;
+
+// 	function handleNextClick() {
+// 		if (hasNext && index < sculptureList.length - 1) {
+// 			setIndex(index + 1);
+// 		} else {
+// 			setIndex(0);
+// 		}
+// 	}
+
+// 	function handlePreviousClick() {
+// 		if (hasNext && index > 0) {
+// 			setIndex(index - 1);
+// 		} else {
+// 			setIndex(sculptureList.length - 1);
+// 		}
+// 	}
+
+// 	function handleMoreClick() {
+// 		setShowMore(!showMore);
+// 	}
+
+// 	let sculpture = sculptureList[index];
+// 	return (
+// 		<>
+// 			<button onClick={handleNextClick}>Next</button>
+// 			<button onClick={handlePreviousClick}>Previous</button>
+// 			<h2>
+// 				<i>{sculpture.name} </i>
+// 				by {sculpture.artist}
+// 			</h2>
+// 			<h3>
+// 				({index + 1} of {sculptureList.length})
+// 			</h3>
+// 			<button onClick={handleMoreClick}>{showMore ? "Hide" : "Show"} details</button>
+// 			{showMore && <p>{sculpture.description}</p>}
+// 			<Image
+// 				src={sculpture.url}
+// 				alt={sculpture.alt}
+// 				width={200}
+// 				height={200}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// export default Gallery;
+
+// ----------------------------------------------------------------------------------
+
+// function Form() {
+// 	const [to, setTo] = useState("Alice");
+// 	const [message, setMessage] = useState("Hello");
+
+// 	function handleSubmit(e: FormEvent<HTMLFormElement>) {
+// 		e.preventDefault();
+// 		setTimeout(() => {
+// 			alert(`You said ${message} to ${to}`);
+// 		}, 5000);
+// 	}
+
+// 	return (
+// 		<form onSubmit={handleSubmit}>
+// 			<label>
+// 				To:{" "}
+// 				<select
+// 					value={to}
+// 					onChange={(e: ChangeEvent<HTMLSelectElement>) => setTo(e.target.value)}>
+// 					<option value="Alice">Alice</option>
+// 					<option value="Bob">Bob</option>
+// 				</select>
+// 			</label>
+// 			<textarea
+// 				placeholder="Message"
+// 				value={message}
+// 				onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
+// 			/>
+// 			<button type="submit">Send</button>
+// 		</form>
+// 	);
+// }
+
+// export default Form;
+
+// ----------------------------------------------------------------------------------
+
+// function Counter(): ReactNode {
+// 	const [score, setScore] = useState(0);
+
+// 	function increment() {
+// 		setScore((s: number) => s + 1);
+// 	}
+
+// 	return (
+// 		<>
+// 			<button onClick={() => increment()}>+1 </button>
+// 			<button
+// 				onClick={() => {
+// 					increment();
+// 					increment();
+// 					increment();
+// 				}}>
+// 				+3
+// 			</button>
+// 			<h1>Score: {score}</h1>
+// 		</>
+// 	);
+// }
+
+// export default Counter;
+
+// ----------------------------------------------------------------------------------
+
+// export default function Form() {
+// 	const persons: Instant = {
+// 		name: "Niki de Saint Phalle",
+// 		artwork: {
+// 			title: "Blue Nana",
+// 			city: "Hamburg",
+// 			image: "https://i.imgur.com/Sd1AgUOm.jpg"
+// 		}
+// 	};
+// 	const [person, setPerson] = useState(persons);
+
+// 	function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setPerson({
+// 			...person,
+// 			name: e.target.value
+// 		});
+// 	}
+
+// 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setPerson({
+// 			...person,
+// 			artwork: {
+// 				...person.artwork,
+// 				title: e.target.value
+// 			}
+// 		});
+// 	}
+
+// 	function handleCityChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setPerson({
+// 			...person,
+// 			artwork: {
+// 				...person.artwork,
+// 				city: e.target.value
+// 			}
+// 		});
+// 	}
+
+// 	function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setPerson({
+// 			...person,
+// 			artwork: {
+// 				...person.artwork,
+// 				image: e.target.value
+// 			}
+// 		});
+// 	}
+
+// 	return (
+// 		<>
+// 			<label>
+// 				Name:
+// 				<input
+// 					value={person.name}
+// 					onChange={handleNameChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Title:
+// 				<input
+// 					value={person.artwork.title}
+// 					onChange={handleTitleChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				City:
+// 				<input
+// 					value={person.artwork.city}
+// 					onChange={handleCityChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Image:
+// 				<input
+// 					value={person.artwork.image}
+// 					onChange={handleImageChange}
+// 				/>
+// 			</label>
+// 			<p>
+// 				<i>{person.artwork.title}</i>
+// 				{" by "}
+// 				{person.name}
+// 				<br />
+// 				(located in {person.artwork.city})
+// 			</p>
+// 			<Image
+// 				src={person.artwork.image}
+// 				alt={person.artwork.title}
+// 				width={200}
+// 				height={200}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Form(): ReactNode {
+// 	const persons: Instant = {
+// 		name: "Niki de Saint Phalle",
+// 		artwork: {
+// 			title: "Blue Nana",
+// 			city: "Hamburg",
+// 			image: "https://i.imgur.com/Sd1AgUOm.jpg"
+// 		}
+// 	};
+// 	const [person, updatePerson] = useImmer(persons);
+
+// 	function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
+// 		updatePerson((draft) => {
+// 			draft.name = e.target.value;
+// 		});
+// 	}
+
+// 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>) {
+// 		updatePerson((draft) => {
+// 			draft.artwork.title = e.target.value;
+// 		});
+// 	}
+
+// 	function handleCityChange(e: ChangeEvent<HTMLInputElement>) {
+// 		updatePerson((draft) => {
+// 			draft.artwork.city = e.target.value;
+// 		});
+// 	}
+
+// 	function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
+// 		updatePerson((draft) => {
+// 			draft.artwork.image = e.target.value;
+// 		});
+// 	}
+
+// 	return (
+// 		<>
+// 			<label>
+// 				Name:
+// 				<input
+// 					value={person.name}
+// 					onChange={handleNameChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Title:
+// 				<input
+// 					value={person.artwork.title}
+// 					onChange={handleTitleChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				City:
+// 				<input
+// 					value={person.artwork.city}
+// 					onChange={handleCityChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Image:
+// 				<input
+// 					value={person.artwork.image}
+// 					onChange={handleImageChange}
+// 				/>
+// 			</label>
+// 			<p>
+// 				<i>{person.artwork.title}</i>
+// 				{" by "}
+// 				{person.name}
+// 				<br />
+// 				(located in {person.artwork.city})
+// 			</p>
+// 			<Image
+// 				src={person.artwork.image}
+// 				alt={person.artwork.title}
+// 				width={200}
+// 				height={200}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// export default Form;
+
+// ----------------------------------------------------------------------------------
+
+// const initialList: Lista[] = [
+// 	{id: 0, title: "Big Bellies", seen: false},
+// 	{id: 1, title: "Lunar Landscape", seen: false},
+// 	{id: 2, title: "Terracotta Army", seen: true}
+// ];
+
+// function BucketList(): ReactNode {
+// 	const [list, setList] = useImmer<Lista[]>(initialList);
+
+// 	function handleToggle(artworkId: number, nextSeen: boolean): void {
+// 		setList((draft: WritableDraft<Lista>) => {
+// 			const artwork = draft.find((a: Lista) => a.id === artworkId);
+// 			artwork.seen = nextSeen;
+//             return draft;
+// 		});
+// 	}
+
+// 	return (
+// 		<>
+// 			<h1>Art Bucket List</h1>
+// 			<h2>My list of art to see:</h2>
+// 			<ItemList
+// 				artworks={list}
+// 				onToggle={handleToggle}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// function ItemList({
+// 	artworks,
+// 	onToggle
+// }: {
+// 	artworks: Lista[];
+// 	onToggle: (artworkId: number, nextSeen: boolean) => void;
+// }): ReactElement {
+// 	return (
+// 		<ul>
+// 			{artworks.map((artwork: Lista) => (
+// 				<li key={artwork.id}>
+// 					<label>
+// 						<input
+// 							type="checkbox"
+// 							checked={artwork.seen}
+// 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 								onToggle(artwork.id, e.target.checked);
+// 							}}
+// 						/>
+// 						{artwork.title}
+// 						{artwork.seen.toString()}
+// 					</label>
+// 				</li>
+// 			))}
+// 		</ul>
+// 	);
+// }
+
+// export default BucketList;
+
+// ----------------------------------------------------------------------------------
+
+function App(): ReactNode {
+	return (
+		<>
+			<h1>Hola ¡Carola!</h1>
+			<h2>Hola ¡Forola!</h2>
+		</>
+	);
+}
+export default App;
