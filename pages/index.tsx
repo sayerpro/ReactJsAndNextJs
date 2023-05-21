@@ -3,6 +3,7 @@ import {format} from "date-fns";
 import {es} from "date-fns/locale";
 import Avatar from "./hijos/Avatar";
 import WritableDraft, {useImmer} from "use-immer";
+import produce from "immer";
 import Profiles from "./profiles/profiles";
 import {Engineer} from "./profiles/profile";
 import {ReactElement, ReactNode} from "react";
@@ -12,7 +13,7 @@ import scientits from "../assets/KatherineJohnson.jpg";
 import profilePic from "../assets/KatherineJohnson.jpg";
 import geochemist from "../assets/KatsukoSaruhashi.jpg";
 import {getImageUrls2, getImageUrls} from "./hijos/utils";
-import {Fragment, useState, FormEvent, ChangeEvent} from "react";
+import {Fragment, useState, FormEvent, ChangeEvent, MouseEventHandler, MouseEvent} from "react";
 import {
 	Person,
 	Children,
@@ -1246,12 +1247,278 @@ import {
 
 // ----------------------------------------------------------------------------------
 
-function App(): ReactNode {
-	return (
-		<>
-			<h1>Hola ¡Carola!</h1>
-			<h2>Hola ¡Forola!</h2>
-		</>
-	);
+// function Button(): ReactElement {
+// 	function handleClick(): void {
+// 		alert("You clicked me!");
+// 	}
+
+// 	return <button onClick={handleClick}>Click me</button>;
+// }
+
+// export default Button;
+
+// ----------------------------------------------------------------------------------
+
+// function Button({onClick, children}: {onClick: () => void; children: ReactNode}): ReactElement {
+// 	return <button onClick={onClick}>{children}</button>;
+// }
+
+// function PlayButton({movieName}: {movieName: string}): ReactElement {
+// 	function handlePlayClick() {
+// 		alert(`Playing ${movieName}!`);
+// 	}
+
+// 	return <Button onClick={handlePlayClick}>Play &quot;{movieName}&quot;</Button>;
+// }
+
+// function UploadButton(): ReactElement {
+// 	return <Button onClick={() => alert("Uploading!")}>Upload Image</Button>;
+// }
+
+// export default function Toolbar(): ReactNode {
+// 	return (
+// 		<div>
+// 			<PlayButton movieName="Kiki's Delivery Service" />
+// 			<UploadButton />
+// 		</div>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Button({onSmash, children}: {onSmash: () => void; children: ReactNode}): ReactElement {
+// 	return <button onClick={onSmash}>{children}</button>;
+// }
+
+// export default function App(): ReactNode {
+// 	return (
+// 		<div>
+// 			<Button onSmash={() => alert("Playing!")}>Play Movie</Button>
+// 			<Button onSmash={() => alert("Uploading!")}>Upload Image</Button>
+// 		</div>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// export default function App(): ReactNode {
+// 	return (
+// 		<Toolbar
+// 			onPlayMovie={() => alert("Playing!")}
+// 			onUploadImage={() => alert("Uploading!")}
+// 		/>
+// 	);
+// }
+
+// function Toolbar({onPlayMovie, onUploadImage}: {onPlayMovie: () => void; onUploadImage: () => void}): ReactElement {
+// 	return (
+// 		<div>
+// 			<Button onClick={onPlayMovie}>Play Movie</Button>
+// 			<Button onClick={onUploadImage}>Upload Image</Button>
+// 		</div>
+// 	);
+// }
+
+// function Button({onClick, children}: {onClick: () => void; children: ReactNode}): ReactElement {
+// 	return <button onClick={onClick}>{children}</button>;
+// }
+
+// ----------------------------------------------------------------------------------
+
+// export default function Toolbar(): ReactNode {
+// 	return (
+// 		<div
+// 			className="Toolbar"
+// 			onClick={() => {
+// 				alert("You clicked on the toolbar!");
+// 			}}>
+// 			<button onClick={() => alert("Playing!")}>Play Movie</button>
+// 			<button onClick={() => alert("Uploading!")}>Upload Image</button>
+// 		</div>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// export default function Toolbar(): ReactNode {
+// 	return (
+// 		<div
+// 			className="Toolbar"
+// 			onClickCapture={() => {
+// 				alert("You clicked on the toolbar!");
+// 			}}>
+// 			<button onClick={() => alert("Playing!")}>Play Movie</button>
+// 			<button onClick={() => alert("Uploading!")}>Upload Image</button>
+// 		</div>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Button({onClick, children}: {onClick: () => void; children: ReactNode}): ReactElement {
+// 	return (
+// 		<button
+// 			onClick={(e: MouseEvent<HTMLButtonElement>) => {
+// 				e.stopPropagation();
+// 				onClick();
+// 			}}>
+// 			{children}
+// 		</button>
+// 	);
+// }
+
+// export default function Toolbar(): ReactNode {
+// 	return (
+// 		<div
+// 			className="Toolbar"
+// 			onClick={() => {
+// 				alert("You clicked on the toolbar!");
+// 			}}>
+// 			<Button onClick={() => alert("Playing!")}>Play Movie</Button>
+// 			<Button onClick={() => alert("Uploading!")}>Upload Image</Button>
+// 		</div>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Button({onClick, children}: {onClick: () => void; children: ReactNode}): ReactElement {
+// 	return (
+// 		<button
+// 			onClick={(e) => {
+// 				e.stopPropagation();
+// 				onClick();
+// 			}}>
+// 			{children}
+// 		</button>
+// 	);
+// }
+
+// export default function App(): ReactNode {
+// 	return (
+// 		<Button onClick={() => alert("Playing!")}>
+// 			<h1>¡Oks!</h1>
+// 		</Button>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// export default function Signup(): ReactNode {
+// 	return (
+// 		<form
+// 			onSubmit={(e: FormEvent<HTMLFormElement>) => {
+// 				e.preventDefault();
+// 				alert("Submitting!");
+// 			}}>
+// 			<input />
+// 			<button>Send</button>
+// 		</form>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// export default function LightSwitch(): ReactNode {
+// 	function handleClick() {
+// 		let bodyStyle = document.body.style;
+// 		if (bodyStyle.backgroundColor === "black") {
+// 			bodyStyle.backgroundColor = "white";
+// 		} else {
+// 			bodyStyle.backgroundColor = "black";
+// 		}
+// 	}
+
+// 	return <button onClick={handleClick}>Toggle the lights</button>;
+// }
+
+// ----------------------------------------------------------------------------------
+
+// export default function ColorSwitch({onChangeColor}: {onChangeColor: () => void}): ReactNode {
+// 	return (
+// 		<button
+// 			onClick={(e: MouseEvent<HTMLButtonElement>) => {
+// 				e.stopPropagation();
+// 				onChangeColor();
+// 			}}>
+// 			Change color
+// 		</button>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// export default function Form(): ReactNode {
+// 	const [firstName, setFirstName] = useState<string>("");
+// 	const [lastName, setLastName] = useState<string>("");
+
+// 	function handleFirstNameChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setFirstName(e.target.value);
+// 	}
+
+// 	function handleLastNameChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setLastName(e.target.value);
+// 	}
+
+// 	function handleReset() {
+// 		setFirstName("");
+// 		setLastName("");
+// 	}
+
+// 	return (
+// 		<form onSubmit={(e) => e.preventDefault()}>
+// 			<input
+// 				placeholder="First name"
+// 				value={firstName}
+// 				onChange={handleFirstNameChange}
+// 			/>
+// 			<input
+// 				placeholder="Last name"
+// 				value={lastName}
+// 				onChange={handleLastNameChange}
+// 			/>
+// 			<h1>
+// 				Hi, {firstName} {lastName}
+// 			</h1>
+// 			<button onClick={handleReset}>Reset</button>
+// 		</form>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function FeedbackForm(): ReactNode {
+// 	const [isSent, setIsSent] = useState<boolean>(false);
+// 	const [message, setMessage] = useState<string>("");
+// 	if (isSent) {
+// 		return <h1>Thank you!</h1>;
+// 	}
+// 	return (
+// 		<form
+// 			onSubmit={(e) => {
+// 				e.preventDefault();
+// 				alert(`Sending: "${message}"`);
+// 				setIsSent(true);
+// 			}}>
+// 			<textarea
+// 				placeholder="Message"
+// 				value={message}
+// 				onChange={(e) => setMessage(e.target.value)}
+// 			/>
+// 			<br />
+// 			<button type="submit">Send</button>
+// 		</form>
+// 	);
+// }
+
+// export default FeedbackForm;
+
+// ----------------------------------------------------------------------------------
+
+export default function FeedbackForm(): ReactNode {
+	function handleClick() {
+		alert(`Hello, ${prompt("What is your name?")}!`);
+	}
+
+	return <button onClick={handleClick}>Greet</button>;
 }
-export default App;
