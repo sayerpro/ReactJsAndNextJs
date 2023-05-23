@@ -2,31 +2,20 @@ import Image from "next/image";
 import {format} from "date-fns";
 import {es} from "date-fns/locale";
 import Avatar from "./hijos/Avatar";
-import WritableDraft, {useImmer} from "use-immer";
 import produce from "immer";
 import Profiles from "./profiles/profiles";
 import {Engineer} from "./profiles/profile";
 import {ReactElement, ReactNode} from "react";
+import {createRoot} from "react-dom/client";
 import biology from "../assets/AkliluLemma.jpg";
 import physician from "../assets/AlanL-Hart.jpg";
+import WritableDraft, {useImmer} from "use-immer";
 import scientits from "../assets/KatherineJohnson.jpg";
 import profilePic from "../assets/KatherineJohnson.jpg";
 import geochemist from "../assets/KatsukoSaruhashi.jpg";
 import {getImageUrls2, getImageUrls} from "./hijos/utils";
 import {Fragment, useState, FormEvent, ChangeEvent, MouseEventHandler, MouseEvent} from "react";
-import {
-	Person,
-	Children,
-	ProfileProps,
-	People,
-	peoples,
-	recipes,
-	recipe,
-	storie,
-	sculptureList,
-	Instant,
-	Lista
-} from "./models/models";
+import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie, sculptureList, Instant, Lista} from "./models/models";
 
 // ----------------------------------------------------------------------------------
 
@@ -1515,10 +1504,178 @@ import {
 
 // ----------------------------------------------------------------------------------
 
-export default function FeedbackForm(): ReactNode {
-	function handleClick() {
-		alert(`Hello, ${prompt("What is your name?")}!`);
-	}
+// export default function FeedbackForm(): ReactNode {
+// 	function handleClick() {
+// 		alert(`Hello, ${prompt("What is your name?")}!`);
+// 	}
 
-	return <button onClick={handleClick}>Greet</button>;
+// 	return <button onClick={handleClick}>Greet</button>;
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Form(): ReactNode {
+// 	const [isSent, setIsSent] = useState(false);
+// 	const [message, setMessage] = useState("Hi!");
+// 	if (isSent) {
+// 		return <h1>Your message is on its way!</h1>;
+// 	}
+// 	return (
+// 		<form
+// 			onSubmit={(e: ChangeEvent<HTMLFormElement>) => {
+// 				e.preventDefault();
+// 				setIsSent(true);
+// 				sendMessage(message);
+// 			}}>
+// 			<textarea
+// 				placeholder="Message"
+// 				value={message}
+// 				onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setMessage(e.target.value)}
+// 			/>
+// 			<button type="submit">Send</button>
+// 		</form>
+// 	);
+// }
+
+// function sendMessage(message: string): void {
+// 	<h1>{message}</h1>;
+// }
+
+// export default Form;
+
+// ----------------------------------------------------------------------------------
+
+// export default function TrafficLight() {
+// 	const [walk, setWalk] = useState(true);
+
+// 	function handleClick() {
+// 		alert(walk ? "Stop is next" : "Walk is next");
+// 		setWalk(!walk);
+// 	}
+
+// 	return (
+// 		<>
+// 			<button onClick={handleClick}>Change to {walk ? "Stop" : "Walk"}</button>
+// 			<h1
+// 				style={{
+// 					color: walk ? "darkgreen" : "darkred"
+// 				}}>
+// 				{walk ? "Walk" : "Stop"}
+// 			</h1>
+// 		</>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function RequestTracker(): ReactNode {
+// 	const [pending, setPending] = useState<number>(0);
+// 	const [completed, setCompleted] = useState<number>(0);
+
+// 	async function handleClick() {
+// 		setPending(pending + 1);
+// 		await delay(3000);
+// 		setPending((pending) => --pending);
+// 		setCompleted((completed) => ++completed);
+// 	}
+
+// 	return (
+// 		<>
+// 			<h3>Pending: {pending}</h3>
+// 			<h3>Completed: {completed}</h3>
+// 			<button onClick={handleClick}>Buy</button>
+// 		</>
+// 	);
+// }
+
+// function delay(ms: number): Promise<number> {
+// 	return new Promise((resolve) => {
+// 		setTimeout(resolve, ms);
+// 	});
+// }
+
+// export default RequestTracker;
+
+// ----------------------------------------------------------------------------------
+
+// function increment(n: number): number {
+// 	return n + 1;
+// }
+// increment.toString = () => "n => n+1";
+
+// function App(): ReactNode {
+// 	return (
+// 		<>
+// 			<TestCase
+// 				baseState={0}
+// 				queue={[1, 1, 1]}
+// 				expected={1}
+// 			/>
+// 			<hr />
+// 			<TestCase
+// 				baseState={0}
+// 				queue={[increment, increment, increment]}
+// 				expected={3}
+// 			/>
+// 			<hr />
+// 			<TestCase
+// 				baseState={0}
+// 				queue={[5, increment]}
+// 				expected={6}
+// 			/>
+// 			<hr />
+// 			<TestCase
+// 				baseState={0}
+// 				queue={[5, increment, 42]}
+// 				expected={42}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// function TestCase({baseState, queue, expected}: {baseState: number; queue: Array<number | ((state: number) => number)>; expected: number}): ReactElement {
+// 	const actual = getFinalState(baseState, queue);
+// 	return (
+// 		<>
+// 			<p>
+// 				Base state: <b>{baseState}</b>
+// 			</p>
+// 			<p>
+// 				Queue: <b>[{queue.join(", ")}]</b>
+// 			</p>
+// 			<p>
+// 				Expected result: <b>{expected}</b>
+// 			</p>
+// 			<p
+// 				style={{
+// 					color: actual === expected ? "green" : "red"
+// 				}}>
+// 				Your result: <b>{actual}</b> ({actual === expected ? "correct" : "wrong"})
+// 			</p>
+// 		</>
+// 	);
+// }
+
+// function getFinalState(baseState: number, queue: Array<number | ((state: number) => number)>): number {
+// 	let finalState: number = baseState;
+
+// 	for (let update of queue) {
+// 		if (typeof update === "function") {
+// 			finalState = update(finalState);
+// 		} else {
+// 			finalState = update;
+// 		}
+// 	}
+
+// 	return finalState;
+// }
+
+// export default App;
+
+// ----------------------------------------------------------------------------------
+
+function App(): ReactNode {
+	return <h1>¡Hola!</h1>;
 }
+
+export default App;
