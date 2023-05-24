@@ -14,8 +14,8 @@ import scientits from "../assets/KatherineJohnson.jpg";
 import profilePic from "../assets/KatherineJohnson.jpg";
 import geochemist from "../assets/KatsukoSaruhashi.jpg";
 import {getImageUrls2, getImageUrls} from "./hijos/utils";
-import {Fragment, useState, FormEvent, ChangeEvent, MouseEventHandler, MouseEvent} from "react";
-import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie, sculptureList, Instant, Lista} from "./models/models";
+import {Fragment, useState, FormEvent, ChangeEvent, MouseEventHandler, MouseEvent, PointerEvent, TouchEvent} from "react";
+import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie, sculptureList, Instant, Lista, PersonInfo, Position} from "./models/models";
 
 // ----------------------------------------------------------------------------------
 
@@ -1455,7 +1455,7 @@ import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie
 // 	}
 
 // 	return (
-// 		<form onSubmit={(e) => e.preventDefault()}>
+// 		<form onSubmit={(e: ChangeEvent<HTMLFormElement>) => e.preventDefault()}>
 // 			<input
 // 				placeholder="First name"
 // 				value={firstName}
@@ -1484,7 +1484,7 @@ import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie
 // 	}
 // 	return (
 // 		<form
-// 			onSubmit={(e) => {
+// 			onSubmit={(e: ChangeEvent<HTMLFormElement>) => {
 // 				e.preventDefault();
 // 				alert(`Sending: "${message}"`);
 // 				setIsSent(true);
@@ -1674,8 +1674,334 @@ import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie
 
 // ----------------------------------------------------------------------------------
 
-function App(): ReactNode {
-	return <h1>¡Hola!</h1>;
+// function MovingDot(): ReactNode {
+// 	const [position, setPosition] = useState({x: 0, y: 0});
+// 	return (
+// 		<div
+// 			onPointerMove={(e: MouseEvent<HTMLDivElement>) => {
+// 				setPosition({
+// 					x: e.clientX,
+// 					y: e.clientY
+// 				});
+// 			}}
+// 			style={{
+// 				position: "relative",
+// 				width: "100vw",
+// 				height: "100vh"
+// 			}}>
+// 			<div
+// 				style={{
+// 					position: "absolute",
+// 					backgroundColor: "red",
+// 					borderRadius: "50%",
+// 					transform: `translate(${position.x}px, ${position.y}px)`,
+// 					left: -10,
+// 					top: -10,
+// 					width: 20,
+// 					height: 20
+// 				}}
+// 			/>
+// 		</div>
+// 	);
+// }
+
+// export default MovingDot;
+
+// ----------------------------------------------------------------------------------
+
+// function Form(): ReactNode {
+// 	const [person, setPerson] = useImmer<PersonInfo>({
+// 		firstName: "Barbara",
+// 		lastName: "Hepworth",
+// 		email: "bhepworth@sculpture.com"
+// 	});
+
+// 	function handleChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setPerson({
+// 			...person,
+// 			[e.target.name]: e.target.value
+// 		});
+// 	}
+
+// 	return (
+// 		<>
+// 			{Object.keys(person).map((key) => (
+// 				<label key={key}>
+// 					{key}:
+// 					<input
+// 						name={key}
+// 						value={person[key]}
+// 						onChange={handleChange}
+// 					/>
+// 				</label>
+// 			))}
+// 			<p>
+// 				{person.firstName} {person.lastName} ({person.email})
+// 			</p>
+// 		</>
+// 	);
+// }
+
+// export default Form;
+
+// ----------------------------------------------------------------------------------
+
+// function Form(): ReactNode {
+// 	const [person, setPerson] = useState({
+// 		name: "Niki de Saint Phalle",
+// 		artwork: {
+// 			title: "Blue Nana",
+// 			city: "Hamburg",
+// 			image: "https://i.imgur.com/Sd1AgUOm.jpg"
+// 		}
+// 	});
+
+// 	function handleNameChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setPerson({
+// 			...person,
+// 			name: e.target.value
+// 		});
+// 	}
+
+// 	function handleTitleChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setPerson({
+// 			...person,
+// 			artwork: {
+// 				...person.artwork,
+// 				title: e.target.value
+// 			}
+// 		});
+// 	}
+
+// 	function handleCityChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setPerson({
+// 			...person,
+// 			artwork: {
+// 				...person.artwork,
+// 				city: e.target.value
+// 			}
+// 		});
+// 	}
+
+// 	function handleImageChange(e: ChangeEvent<HTMLInputElement>): void {
+// setPerson({
+// 	...person,
+// 	artwork: {
+// 		...person.artwork,
+// 		image: e.target.value
+// 	}
+// });
+// 	}
+
+// 	return (
+// 		<>
+// 			<label>
+// 				Name:
+// 				<input
+// 					value={person.name}
+// 					onChange={handleNameChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Title:
+// 				<input
+// 					value={person.artwork.title}
+// 					onChange={handleTitleChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				City:
+// 				<input
+// 					value={person.artwork.city}
+// 					onChange={handleCityChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Image:
+// 				<input
+// 					value={person.artwork.image}
+// 					onChange={handleImageChange}
+// 				/>
+// 			</label>
+// 			<p>
+// 				<i>{person.artwork.title}</i>
+// 				{" by "}
+// 				{person.name}
+// 				<br />
+// 				(located in {person.artwork.city})
+// 			</p>
+// 			<Image
+// 				src={person.artwork.image}
+// 				alt={person.artwork.title}
+// 				width={200}
+// 				height={200}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// export default Form;
+
+// ----------------------------------------------------------------------------------
+
+// function Scoreboard(): ReactNode {
+// 	const [player, setPlayer] = useState({
+// 		firstName: "Ranjani",
+// 		lastName: "Shettar",
+// 		score: 10
+// 	});
+
+// 	function handlePlusClick(): void {
+// 		setPlayer({...player, score: ++player.score});
+// 	}
+
+// 	function handleFirstNameChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setPlayer({
+// 			...player,
+// 			firstName: e.target.value
+// 		});
+// 	}
+
+// 	function handleLastNameChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setPlayer({...player, lastName: e.target.value});
+// 	}
+
+// 	return (
+// 		<>
+// 			<label>
+// 				Score: <b>{player.score}</b> <button onClick={handlePlusClick}>+1</button>
+// 			</label>
+// 			<label>
+// 				First name:
+// 				<input
+// 					value={player.firstName}
+// 					onChange={handleFirstNameChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Last name:
+// 				<input
+// 					value={player.lastName}
+// 					onChange={handleLastNameChange}
+// 				/>
+// 			</label>
+// 		</>
+// 	);
+// }
+
+// export default Scoreboard;
+
+// ----------------------------------------------------------------------------------
+
+function Background({position}: {position: Position}): ReactElement {
+	return (
+		<div
+			style={{
+				position: "absolute",
+				transform: `translate(${position.x}px, ${position.y}px)`,
+				width: 250,
+				height: 250,
+				backgroundColor: "rgba(200, 200, 0, 0.2)"
+			}}
+		/>
+	);
 }
 
-export default App;
+function Box({children, color, position, onMove}: {children: ReactNode; color: string; position: Position; onMove: (dx: number, dy: number) => void}): ReactElement {
+	const [lastCoordinates, setLastCoordinates] = useState<{x: number; y: number} | null>(null);
+
+	function handlePointerDown(e: PointerEvent<HTMLDivElement>): void {
+		const target = e.target as HTMLDivElement;
+		target.setPointerCapture(e.pointerId);
+
+		setLastCoordinates({
+			x: e.clientX,
+			y: e.clientY
+		});
+	}
+
+	function handlePointerMove(e: PointerEvent<HTMLDivElement>): void {
+		if (lastCoordinates) {
+			setLastCoordinates({
+				x: e.clientX,
+				y: e.clientY
+			});
+			const dx = e.clientX - lastCoordinates.x;
+			const dy = e.clientY - lastCoordinates.y;
+			onMove(dx, dy);
+		}
+	}
+
+	function handlePointerUp(e: PointerEvent<HTMLDivElement>): void {
+		setLastCoordinates(null);
+	}
+
+	return (
+		<div
+			onPointerDown={handlePointerDown}
+			onPointerMove={handlePointerMove}
+			onPointerUp={handlePointerUp}
+			style={{
+				width: 100,
+				height: 100,
+				cursor: "grab",
+				backgroundColor: color,
+				position: "absolute",
+				border: "1px solid black",
+				display: "flex",
+				justifyContent: "center",
+				alignItems: "center",
+				transform: `translate(${position.x}px,${position.y}px)`
+			}}>
+			{children}
+		</div>
+	);
+}
+
+const initialPosition: Position = {x: 0, y: 0};
+
+function Canvas(): ReactNode {
+	const [shape, setShape] = useImmer({
+		color: "orange",
+		position: initialPosition
+	});
+
+	function handleMove(dx: number, dy: number): void {
+		setShape((draft) => {
+			(draft.position.x = dx), (draft.position.y = dy);
+		});
+	}
+
+	function handleColorChange(e: ChangeEvent<HTMLSelectElement>): void {
+		setShape((draftt) => {
+			draftt.color = e.target.value;
+		});
+	}
+
+	return (
+		<>
+			<select
+				value={shape.color}
+				onChange={handleColorChange}>
+				<option value="orange">orange</option>
+				<option value="lightpink">lightpink</option>
+				<option value="aliceblue">aliceblue</option>
+			</select>
+			<Background position={initialPosition} />
+			<Box
+				color={shape.color}
+				position={shape.position}
+				onMove={handleMove}>
+				Drag me!
+			</Box>
+		</>
+	);
+}
+
+export default Canvas;
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------

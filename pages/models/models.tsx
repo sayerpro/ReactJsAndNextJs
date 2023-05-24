@@ -149,8 +149,7 @@ export const sculptureList = [
 	{
 		name: "Cavaliere",
 		artist: "Lamidi Olonade Fakeye",
-		description:
-			"Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
+		description: "Descended from four generations of woodcarvers, Fakeye's work blended traditional and contemporary Yoruba themes.",
 		url: "https://i.imgur.com/wIdGuZwm.png",
 		alt: "An intricate wood sculpture of a warrior with a focused face on a horse adorned with patterns."
 	},
@@ -208,4 +207,13 @@ export interface Lista {
 	id: number;
 	title: string;
 	seen: boolean;
+}
+
+export interface PersonInfo {
+	[key: string]: string;
+}
+
+export interface Position {
+	x: number;
+	y: number;
 }
