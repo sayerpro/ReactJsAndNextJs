@@ -5,7 +5,7 @@ import Avatar from "./hijos/Avatar";
 import produce from "immer";
 import Profiles from "./profiles/profiles";
 import {Engineer} from "./profiles/profile";
-import {ReactElement, ReactNode} from "react";
+import {HtmlHTMLAttributes, ReactElement, ReactNode} from "react";
 import {createRoot} from "react-dom/client";
 import biology from "../assets/AkliluLemma.jpg";
 import physician from "../assets/AlanL-Hart.jpg";
@@ -14,8 +14,29 @@ import scientits from "../assets/KatherineJohnson.jpg";
 import profilePic from "../assets/KatherineJohnson.jpg";
 import geochemist from "../assets/KatsukoSaruhashi.jpg";
 import {getImageUrls2, getImageUrls} from "./hijos/utils";
-import {Fragment, useState, FormEvent, ChangeEvent, MouseEventHandler, MouseEvent, PointerEvent, TouchEvent} from "react";
-import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie, sculptureList, Instant, Lista, PersonInfo, Position} from "./models/models";
+import {Fragment, useState, FormEvent, ChangeEvent, MouseEventHandler, MouseEvent, PointerEvent, TouchEvent, Dispatch, SetStateAction, useReducer} from "react";
+import {
+	Person,
+	Children,
+	ProfileProps,
+	People,
+	peoples,
+	recipes,
+	recipe,
+	storie,
+	sculptureList,
+	Instant,
+	Lista,
+	PersonInfo,
+	Position,
+	Shapes,
+	Artists,
+	ListPing,
+	ListPong,
+	Todos,
+	Chat,
+	Action
+} from "./models/models";
 
 // ----------------------------------------------------------------------------------
 
@@ -1893,115 +1914,983 @@ import {Person, Children, ProfileProps, People, peoples, recipes, recipe, storie
 
 // ----------------------------------------------------------------------------------
 
-function Background({position}: {position: Position}): ReactElement {
+// function Background({position}: {position: Position}): ReactElement {
+// 	return (
+// 		<div
+// 			style={{
+// 				position: "absolute",
+// 				transform: `translate(${position.x}px, ${position.y}px)`,
+// 				width: 250,
+// 				height: 250,
+// 				backgroundColor: "rgba(200, 200, 0, 0.2)"
+// 			}}
+// 		/>
+// 	);
+// }
+
+// function Box({children, color, position, onMove}: {children: ReactNode; color: string; position: Position; onMove: (dx: number, dy: number) => void}): ReactElement {
+// 	const [lastCoordinates, setLastCoordinates] = useState<{x: number; y: number} | null>(null);
+
+// 	function handlePointerDown(e: PointerEvent<HTMLDivElement>): void {
+// 		const target = e.target as HTMLDivElement;
+// 		target.setPointerCapture(e.pointerId);
+
+// 		setLastCoordinates({
+// 			x: e.clientX,
+// 			y: e.clientY
+// 		});
+// 	}
+
+// 	function handlePointerMove(e: PointerEvent<HTMLDivElement>): void {
+// 		if (lastCoordinates) {
+// 			setLastCoordinates({
+// 				x: e.clientX,
+// 				y: e.clientY
+// 			});
+// 			const dx = e.clientX - lastCoordinates.x;
+// 			const dy = e.clientY - lastCoordinates.y;
+// 			onMove(dx, dy);
+// 		}
+// 	}
+
+// 	function handlePointerUp(e: PointerEvent<HTMLDivElement>): void {
+// 		setLastCoordinates(null);
+// 	}
+
+// 	return (
+// 		<div
+// 			onPointerDown={handlePointerDown}
+// 			onPointerMove={handlePointerMove}
+// 			onPointerUp={handlePointerUp}
+// 			style={{
+// 				width: 100,
+// 				height: 100,
+// 				cursor: "grab",
+// 				backgroundColor: color,
+// 				position: "absolute",
+// 				border: "1px solid black",
+// 				display: "flex",
+// 				justifyContent: "center",
+// 				alignItems: "center",
+// 				transform: `translate(${position.x}px,${position.y}px)`
+// 			}}>
+// 			{children}
+// 		</div>
+// 	);
+// }
+
+// const initialPosition: Position = {x: 0, y: 0};
+
+// function Canvas(): ReactNode {
+// 	const [shape, setShape] = useImmer({
+// 		color: "orange",
+// 		position: initialPosition
+// 	});
+
+// 	function handleMove(dx: number, dy: number): void {
+// 		setShape((draft) => {
+// 			(draft.position.x = dx), (draft.position.y = dy);
+// 		});
+// 	}
+
+// 	function handleColorChange(e: ChangeEvent<HTMLSelectElement>): void {
+// 		setShape((draftt) => {
+// 			draftt.color = e.target.value;
+// 		});
+// 	}
+
+// 	return (
+// 		<>
+// 			<select
+// 				value={shape.color}
+// 				onChange={handleColorChange}>
+// 				<option value="orange">orange</option>
+// 				<option value="lightpink">lightpink</option>
+// 				<option value="aliceblue">aliceblue</option>
+// 			</select>
+// 			<Background position={initialPosition} />
+// 			<Box
+// 				color={shape.color}
+// 				position={shape.position}
+// 				onMove={handleMove}>
+// 				Drag me!
+// 			</Box>
+// 		</>
+// 	);
+// }
+
+// export default Canvas;
+
+// ----------------------------------------------------------------------------------
+
+// function List(): ReactNode {
+// 	let nextId = 0;
+// 	const [name, setName] = useState<string>("");
+// 	const [artists, setArtists] = useState<Array<{id: number; name: string}>>([]);
+
+// 	return (
+// 		<>
+// 			<h1>Inspiring sculptors:</h1>
+// 			<input
+// 				value={name}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+// 			/>
+// 			<button
+// 				onClick={() => {
+// 					setArtists([{id: nextId++, name: name}, ...artists]);
+// 				}}>
+// 				Add
+// 			</button>
+// 			<ul>
+// 				{artists.map((artist: {id: number; name: string}) => (
+// 					<li key={artist.id}>{artist.name}</li>
+// 				))}
+// 			</ul>
+// 		</>
+// 	);
+// }
+
+// export default List;
+
+// ----------------------------------------------------------------------------------
+
+// let initialArtists = [
+// 	{id: 0, name: "Marta Colvin Andrade"},
+// 	{id: 1, name: "Lamidi Olonade Fakeye"},
+// 	{id: 2, name: "Louise Nevelson"}
+// ];
+
+// function List(): ReactNode {
+// 	const [artists, setArtists] = useState(initialArtists);
+
+// 	return (
+// 		<>
+// 			<h1>Inspiring sculptors:</h1>
+// 			<ul>
+// 				{artists.map((artist) => (
+// 					<li key={artist.id}>
+// 						{artist.name}{" "}
+// 						<button
+// 							onClick={() => {
+// 								setArtists(artists.filter((a) => a.id !== artist.id));
+// 							}}>
+// 							Delete
+// 						</button>
+// 					</li>
+// 				))}
+// 			</ul>
+// 		</>
+// 	);
+// }
+
+// export default List;
+
+// ----------------------------------------------------------------------------------
+
+// let initialShapes: Shapes[] = [
+// 	{id: 0, type: "circle", x: 50, y: 100},
+// 	{id: 1, type: "square", x: 150, y: 100},
+// 	{id: 2, type: "circle", x: 250, y: 100}
+// ];
+
+// function ShapeEditor(): ReactNode {
+// 	const [shapes, setShapes] = useState<Shapes[]>(initialShapes);
+
+// 	function handleClick(): void {
+// 		const nextShapes = shapes.map((shape) => {
+// 			if (shape.type === "square") {
+// 				return shape;
+// 			} else {
+// 				return {
+// 					...shape,
+// 					y: shape.y + 50
+// 				};
+// 			}
+// 		});
+// 		setShapes(nextShapes);
+// 	}
+
+// 	return (
+// 		<>
+// 			<button onClick={handleClick}>Move circles down!</button>
+// 			{shapes.map((shape) => (
+// 				<div
+// 					key={shape.id}
+// 					style={{
+// 						background: "purple",
+// 						position: "absolute",
+// 						left: shape.x,
+// 						top: shape.y,
+// 						borderRadius: shape.type === "circle" ? "50%" : "",
+// 						width: 20,
+// 						height: 20
+// 					}}
+// 				/>
+// 			))}
+// 		</>
+// 	);
+// }
+
+// export default ShapeEditor;
+
+// ----------------------------------------------------------------------------------
+
+// let initialCounters: number[] = [0, 0, 0];
+
+// function CounterList(): ReactNode {
+// 	const [counters, setCounters] = useState<number[]>(initialCounters);
+
+// 	function handleIncrementClick(index: number): void {
+// 		const nextCounters: number[] = counters.map<number>((c: number, i: number): number => {
+// 			return i === index ? c + 1 : c;
+// 		});
+// 		setCounters(nextCounters);
+// 	}
+
+// 	return (
+// 		<ul>
+// 			{counters.map<ReactElement>((counter: number, i: number): ReactElement => (
+// 				<li key={i}>
+// 					{counter}
+// 					<button
+// 						onClick={(): void => {
+// 							handleIncrementClick(i);
+// 						}}>
+// 						+1
+// 					</button>
+// 				</li>
+// 			))}
+// 		</ul>
+// 	);
+// }
+
+// export default CounterList;
+
+// ----------------------------------------------------------------------------------
+
+// let nextId: number = 3;
+// const initialArtists: Artists[] = [
+// 	{id: 0, name: "Marta Colvin Andrade"},
+// 	{id: 1, name: "Lamidi Olonade Fakeye"},
+// 	{id: 2, name: "Louise Nevelson"}
+// ];
+
+// function List(): ReactNode {
+// 	const [name, setName]: [string, Dispatch<SetStateAction<string>>] = useState<string>("");
+// 	const [artists, setArtists]: [Artists[], Dispatch<SetStateAction<Artists[]>>] = useState<Artists[]>(initialArtists);
+
+// 	function handleClick(): void {
+// 		const insertAt: number = 1;
+// 		const nextArtists: Artists[] = [...artists.slice(0, insertAt), {id: nextId++, name: name}, ...artists.slice(insertAt)];
+// 		setArtists(nextArtists);
+// 		setName("");
+// 	}
+
+// 	return (
+// 		<>
+// 			<h1>Inspiring sculptors:</h1>
+// 			<input
+// 				value={name}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>): void => setName(e.target.value)}
+// 			/>
+// 			<button onClick={handleClick}>Insert</button>
+// 			<ul>
+// 				{artists.map<ReactElement>(
+// 					(artist: Artists): ReactElement => (
+// 						<li key={artist.id}>{artist.name}</li>
+// 					)
+// 				)}
+// 			</ul>
+// 		</>
+// 	);
+// }
+
+// export default List;
+
+// ----------------------------------------------------------------------------------
+
+// let nextId: number = 3;
+// const initialList: ListPing[] = [
+// 	{id: 0, title: "Big Bellies"},
+// 	{id: 1, title: "Lunar Landscape"},
+// 	{id: 2, title: "Terracotta Army"}
+// ];
+
+// function List(): ReactNode {
+// 	const [list, setList] = useState<ListPing[]>(initialList);
+
+// 	function handleClick(): void {
+// 		const nextList: ListPing[] = [...list];
+// 		nextList.reverse();
+// 		setList(nextList);
+// 	}
+
+// 	return (
+// 		<>
+// 			<button onClick={handleClick}>Reverse</button>
+// 			<ul>
+// 				{list.map((artwork: ListPing) => (
+// 					<li key={artwork.id}>{artwork.title}</li>
+// 				))}
+// 			</ul>
+// 		</>
+// 	);
+// }
+
+// export default List;
+
+// ----------------------------------------------------------------------------------
+
+// let nextId: number = 3;
+// const initialList: ListPong[] = [
+// 	{id: 0, title: "Big Bellies", seen: false},
+// 	{id: 1, title: "Lunar Landscape", seen: false},
+// 	{id: 2, title: "Terracotta Army", seen: true}
+// ];
+
+// function BucketList(): ReactNode {
+// 	const [myList, setMyList] = useState<ListPong[]>(initialList);
+// 	const [yourList, setYourList] = useImmer<ListPong[]>(initialList);
+
+// 	function handleToggleMyList(artworkId: number, nextSeen: boolean): void {
+// 		const myNextList: ListPong[] = [...myList];
+// 		const artwork: ListPong | undefined = myNextList.find((a: ListPong) => a.id === artworkId);
+// 		if (artwork) {
+// 			artwork.seen = nextSeen;
+// 		}
+// 		setMyList(myNextList);
+// 	}
+
+// 	function handleToggleYourList(artworkId: number, nextSeen: boolean): void {
+// 		setYourList((draft) => {
+// 			const artwork = draft.find((a: ListPong) => a.id === artworkId);
+// 			if (artwork) {
+// 				artwork.seen = nextSeen;
+// 			}
+// 		});
+// 	}
+
+// 	return (
+// 		<>
+// 			<h1>Art Bucket List</h1>
+// 			<h2>My list of art to see:</h2>
+// 			<ItemList
+// 				artworks={myList}
+// 				onToggle={handleToggleMyList}
+// 			/>
+// 			<h2>Your list of art to see:</h2>
+// 			<ItemList
+// 				artworks={yourList}
+// 				onToggle={handleToggleYourList}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// function ItemList({artworks, onToggle}: {artworks: ListPong[]; onToggle: (artworkId: number, nextSeen: boolean) => void}): ReactElement {
+// 	return (
+// 		<ul>
+// 			{artworks.map((artwork: ListPong) => (
+// 				<li key={artwork.id}>
+// 					<label>
+// 						<input
+// 							type="checkbox"
+// 							checked={artwork.seen}
+// 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 								onToggle(artwork.id, e.target.checked);
+// 							}}
+// 						/>
+// 						{artwork.title}
+// 					</label>
+// 				</li>
+// 			))}
+// 		</ul>
+// 	);
+// }
+
+// export default BucketList;
+
+// ----------------------------------------------------------------------------------
+
+// const initialProducts = [
+// 	{
+// 		id: 0,
+// 		name: "Baklava",
+// 		count: 1
+// 	},
+// 	{
+// 		id: 1,
+// 		name: "Cheese",
+// 		count: 5
+// 	},
+// 	{
+// 		id: 2,
+// 		name: "Spaghetti",
+// 		count: 2
+// 	}
+// ];
+
+// export default function ShoppingCart() {
+// 	const [products, setProducts] = useState(initialProducts);
+
+// 	function handleClick(productId: number, increment: boolean) {
+// 		setProducts((prevProducts) => prevProducts.map((product) => (product.id === productId ? {...product, count: increment ? product.count + 1 : product.count - 1} : product)));
+// 	}
+
+// 	return (
+// 		<ul>
+// 			{products
+// 				.filter((product) => product.count > 0)
+// 				.map((product) => (
+// 					<li key={product.id}>
+// 						{product.name} (<b>{product.count}</b>)
+// 						<button
+// 							onClick={() => {
+// 								handleClick(product.id, true);
+// 							}}>
+// 							+
+// 						</button>
+// 						<button
+// 							onClick={() => {
+// 								handleClick(product.id, false);
+// 							}}>
+// 							-
+// 						</button>
+// 					</li>
+// 				))}
+// 		</ul>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// let nextId: number = 3;
+// const initialTodos: Todos[] = [
+// 	{id: 0, title: "Buy milk", done: true},
+// 	{id: 1, title: "Eat tacos", done: false},
+// 	{id: 2, title: "Brew tea", done: false}
+// ];
+
+// function TaskApp(): ReactNode {
+// 	const [todos, setTodos] = useImmer<Todos[]>(initialTodos);
+
+// 	function handleAddTodo(title: string): void {
+// 		setTodos((draft) => {
+// 			draft.push({
+// 				id: nextId++,
+// 				title: title,
+// 				done: false
+// 			});
+// 		});
+
+// 		// let todo = [...todos];
+// 		// todo.push({
+// 		// 	id: nextId++,
+// 		// 	title: title,
+// 		// 	done: false
+// 		// });
+// 		// setTodos(todo);
+// 	}
+
+// 	function handleChangeTodo(nextTodo: Todos): void {
+// 		setTodos((draft) => {
+// 			draft.map((todo: Todos) => {
+// 				if (todo.id === nextTodo.id) {
+// 					todo.title = nextTodo.title;
+// 					todo.done = nextTodo.done;
+// 				}
+// 			});
+// 		});
+
+// 		// setTodos((prevTodos) => prevTodos.map((todo: Todos) => (todo.id === nextTodo.id ? {...todo, title: nextTodo.title, done: nextTodo.done} : todo)));
+// 	}
+
+// 	function handleDeleteTodo(todoId: number): void {
+// 		setTodos((draft) => {
+// 			const index = draft.findIndex((t: Todos) => t.id === todoId);
+// 			draft.splice(index, 1);
+// 		});
+
+// 		// setTodos(todos.filter((todo: Todos) => todo.id !== todoId));
+// 	}
+
+// 	return (
+// 		<>
+// 			<AddTodo onAddTodo={handleAddTodo} />
+// 			<TaskList
+// 				todos={todos}
+// 				onChangeTodo={handleChangeTodo}
+// 				onDeleteTodo={handleDeleteTodo}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// function AddTodo({onAddTodo}: {onAddTodo: (title: string) => void}): ReactElement {
+// 	const [title, setTitle] = useState<string>("");
+// 	return (
+// 		<>
+// 			<input
+// 				placeholder="Add todo"
+// 				value={title}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+// 			/>
+// 			<button
+// 				onClick={() => {
+// 					setTitle("");
+// 					onAddTodo(title);
+// 				}}>
+// 				Add
+// 			</button>
+// 		</>
+// 	);
+// }
+
+// function TaskList({todos, onChangeTodo, onDeleteTodo}: {todos: Todos[]; onChangeTodo: (nextTodo: Todos) => void; onDeleteTodo: (todoId: number) => void}) {
+// 	return (
+// 		<ul>
+// 			{todos.map((todo: Todos) => (
+// 				<li key={todo.id}>
+// 					<Task
+// 						todo={todo}
+// 						onChange={onChangeTodo}
+// 						onDelete={onDeleteTodo}
+// 					/>
+// 				</li>
+// 			))}
+// 		</ul>
+// 	);
+// }
+
+// function Task({todo, onChange, onDelete}: {todo: Todos; onChange: (nextTodo: Todos) => void; onDelete: (todoId: number) => void}) {
+// 	const [isEditing, setIsEditing] = useState<boolean>(false);
+// 	let todoContent;
+// 	if (isEditing) {
+// 		todoContent = (
+// 			<>
+// 				<input
+// 					value={todo.title}
+// 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 						onChange({
+// 							...todo,
+// 							title: e.target.value
+// 						});
+// 					}}
+// 				/>
+// 				<button onClick={() => setIsEditing(false)}>Save</button>
+// 			</>
+// 		);
+// 	} else {
+// 		todoContent = (
+// 			<>
+// 				{todo.title}
+// 				<button onClick={() => setIsEditing(true)}>Edit</button>
+// 			</>
+// 		);
+// 	}
+// 	return (
+// 		<label>
+// 			<input
+// 				type="checkbox"
+// 				checked={todo.done}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 					onChange({
+// 						...todo,
+// 						done: e.target.checked
+// 					});
+// 				}}
+// 			/>
+// 			{todoContent}
+// 			<button onClick={() => onDelete(todo.id)}>Delete</button>
+// 		</label>
+// 	);
+// }
+
+// export default TaskApp;
+
+// ----------------------------------------------------------------------------------
+
+// function Form(): ReactNode {
+// 	const [answer, setAnswer] = useState<string>("");
+// 	const [error, setError] = useState<null | {message: string}>(null);
+// 	const [status, setStatus] = useState<string>("typing");
+
+// 	if (status === "success") {
+// 		return <h1>That&apos;s right!</h1>;
+// 	}
+
+// 	async function handleSubmit(e: ChangeEvent<HTMLFormElement>): Promise<string | void> {
+// 		e.preventDefault();
+// 		setStatus("submitting");
+// 		try {
+// 			await submitForm(answer);
+// 			setStatus("success");
+// 		} catch (err) {
+// 			setStatus("typing");
+// 			setError(err as {message: string} | null);
+// 		}
+// 	}
+
+// 	function handleTextareaChange(e: ChangeEvent<HTMLTextAreaElement>): void {
+// 		setAnswer(e.target.value);
+// 	}
+
+// 	return (
+// 		<>
+// 			<h2>City quiz</h2>
+// 			<p>In which city is there a billboard that turns air into drinkable water?</p>
+// 			<form onSubmit={handleSubmit}>
+// 				<textarea
+// 					value={answer}
+// 					onChange={handleTextareaChange}
+// 					disabled={status === "submitting"}
+// 				/>
+// 				<br />
+// 				<button disabled={answer.length === 0 || status === "submitting"}>Submit</button>
+// 				{error !== null && <p className="Error">{error.message}</p>}
+// 			</form>
+// 		</>
+// 	);
+// }
+
+// function submitForm(answer: string): Promise<string | void> {
+// 	return new Promise((resolve, reject) => {
+// 		setTimeout(() => {
+// 			let shouldError = answer.toLowerCase() !== "lima";
+// 			if (shouldError) {
+// 				reject(new Error("Good guess but a wrong answer. Try again!"));
+// 			} else {
+// 				resolve();
+// 			}
+// 		}, 1500);
+// 	});
+// }
+
+// export default Form;
+
+// ----------------------------------------------------------------------------------
+
+// export default function Form() {
+// 	const [firstName, setFirstName] = useState("");
+// 	const [lastName, setLastName] = useState("");
+
+// 	const fullName = firstName + " " + lastName;
+
+// 	function handleFirstNameChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setFirstName(e.target.value);
+// 	}
+
+// 	function handleLastNameChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setLastName(e.target.value);
+// 	}
+
+// 	return (
+// 		<>
+// 			<h2>Let’s check you in</h2>
+// 			<label>
+// 				First name:{" "}
+// 				<input
+// 					value={firstName}
+// 					onChange={handleFirstNameChange}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Last name:{" "}
+// 				<input
+// 					value={lastName}
+// 					onChange={handleLastNameChange}
+// 				/>
+// 			</label>
+// 			<p>
+// 				Your ticket will be issued to: <b>{fullName}</b>
+// 			</p>
+// 		</>
+// 	);
+// }
+
+// ----------------------------------------------------------------------------------
+
+// function Accordion(): ReactNode {
+// 	const [activeIndex, setActiveIndex] = useState(0);
+// 	return (
+// 		<>
+// 			<h2>Almaty, Kazakhstan</h2>
+// 			<Panel
+// 				title="About"
+// 				isActive={activeIndex === 0}
+// 				onShow={() => setActiveIndex(0)}>
+// 				With a population of about 2 million, Almaty is Kazakhstan&apos;s largest city. From 1929 to 1997, it was its capital city.
+// 			</Panel>
+// 			<Panel
+// 				title="Etymology"
+// 				isActive={activeIndex === 1}
+// 				onShow={() => setActiveIndex(1)}>
+// 				The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for &apos;apple&apos; and is often translated as &apos;full of apples&apos;. In fact, the region
+// 				surrounding Almaty is thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the
+// 				modern domestic apple.
+// 			</Panel>
+// 		</>
+// 	);
+// }
+
+// function Panel({title, children, isActive, onShow}: {title: string; children: ReactNode; isActive: boolean; onShow: () => void}): ReactElement {
+// 	return (
+// 		<section className="panel">
+// 			<h3>{title}</h3>
+// 			{isActive ? <p>{children}</p> : <button onClick={onShow}>Show</button>}
+// 		</section>
+// 	);
+// }
+
+// export default Accordion;
+
+// ----------------------------------------------------------------------------------
+
+// function Chat({contact, onChange}: {contact: Chat; onChange: (text: string) => void}): ReactElement {
+// 	return (
+// 		<section className="chat">
+// 			<textarea
+// 				value={contact.text}
+// 				placeholder={"Chat to " + contact.name}
+// 				onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+// 					onChange(e.target.value);
+// 				}}
+// 			/>
+// 			<br />
+// 			<button>Send to {contact.email}</button>
+// 		</section>
+// 	);
+// }
+
+// function ContactList({contacts, onSelect}: {contacts: Chat[]; onSelect: (contact: Chat) => void}): ReactElement {
+// 	return (
+// 		<section className="contact-list">
+// 			<ul>
+// 				{contacts.map((contact: Chat) => (
+// 					<li key={contact.email}>
+// 						<button
+// 							onClick={() => {
+// 								onSelect(contact);
+// 							}}>
+// 							{contact.name}
+// 						</button>
+// 					</li>
+// 				))}
+// 			</ul>
+// 		</section>
+// 	);
+// }
+
+// function Messenger(): ReactElement {
+// 	const [contacts, setContacts] = useImmer<Chat[]>([
+// 		{name: "Taylor", email: "taylor@mail.com", text: ""},
+// 		{name: "Alice", email: "alice@mail.com", text: ""},
+// 		{name: "Bob", email: "bob@mail.com", text: ""}
+// 	]);
+// 	const [person, setPerson] = useImmer<Chat>(contacts[0]);
+
+// 	function handleSelect(contact: Chat): void {
+// 		setContacts((draft) => {
+// 			const index = draft.findIndex((o) => o.name === person.name);
+// 			draft[index].text = person.text;
+// 		});
+// 		setPerson({
+// 			...person,
+// 			name: contact.name,
+// 			email: contact.email,
+// 			text: contact.text
+// 		});
+// 		console.log(person);
+// 	}
+
+// 	function handleChange(text: string): void {
+// 		setPerson((draft) => {
+// 			draft.text = text;
+// 		});
+// 	}
+
+// 	return (
+// 		<div>
+// 			<ContactList
+// 				contacts={contacts}
+// 				onSelect={handleSelect}
+// 			/>
+// 			<Chat
+// 				contact={person}
+// 				onChange={handleChange}
+// 			/>
+// 		</div>
+// 	);
+// }
+
+// export default Messenger;
+
+// ----------------------------------------------------------------------------------
+
+function AddTask({onAddTask}: {onAddTask: (title: string) => void}): ReactElement {
+	const [title, setTitle] = useState<string>("");
 	return (
-		<div
-			style={{
-				position: "absolute",
-				transform: `translate(${position.x}px, ${position.y}px)`,
-				width: 250,
-				height: 250,
-				backgroundColor: "rgba(200, 200, 0, 0.2)"
-			}}
-		/>
+		<>
+			<input
+				placeholder="Add todo"
+				value={title}
+				onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+			/>
+			<button
+				onClick={() => {
+					setTitle("");
+					onAddTask(title);
+				}}>
+				Add
+			</button>
+		</>
 	);
 }
 
-function Box({children, color, position, onMove}: {children: ReactNode; color: string; position: Position; onMove: (dx: number, dy: number) => void}): ReactElement {
-	const [lastCoordinates, setLastCoordinates] = useState<{x: number; y: number} | null>(null);
-
-	function handlePointerDown(e: PointerEvent<HTMLDivElement>): void {
-		const target = e.target as HTMLDivElement;
-		target.setPointerCapture(e.pointerId);
-
-		setLastCoordinates({
-			x: e.clientX,
-			y: e.clientY
-		});
-	}
-
-	function handlePointerMove(e: PointerEvent<HTMLDivElement>): void {
-		if (lastCoordinates) {
-			setLastCoordinates({
-				x: e.clientX,
-				y: e.clientY
-			});
-			const dx = e.clientX - lastCoordinates.x;
-			const dy = e.clientY - lastCoordinates.y;
-			onMove(dx, dy);
-		}
-	}
-
-	function handlePointerUp(e: PointerEvent<HTMLDivElement>): void {
-		setLastCoordinates(null);
-	}
-
+function TaskList({todos, onChangeTask, onDeleteTask}: {todos: Todos[]; onChangeTask: (tasks: Todos) => void; onDeleteTask: (todoId: number) => void}) {
 	return (
-		<div
-			onPointerDown={handlePointerDown}
-			onPointerMove={handlePointerMove}
-			onPointerUp={handlePointerUp}
-			style={{
-				width: 100,
-				height: 100,
-				cursor: "grab",
-				backgroundColor: color,
-				position: "absolute",
-				border: "1px solid black",
-				display: "flex",
-				justifyContent: "center",
-				alignItems: "center",
-				transform: `translate(${position.x}px,${position.y}px)`
-			}}>
-			{children}
-		</div>
+		<ul>
+			{todos.map((todo: Todos) => (
+				<li key={todo.id}>
+					<Task
+						todo={todo}
+						onChange={onChangeTask}
+						onDelete={onDeleteTask}
+					/>
+				</li>
+			))}
+		</ul>
 	);
 }
 
-const initialPosition: Position = {x: 0, y: 0};
+function Task({todo, onChange, onDelete}: {todo: Todos; onChange: (nextTodo: Todos) => void; onDelete: (todoId: number) => void}) {
+	const [isEditing, setIsEditing] = useState<boolean>(false);
+	let todoContent;
+	if (isEditing) {
+		todoContent = (
+			<>
+				<input
+					value={todo.title}
+					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+						onChange({
+							...todo,
+							title: e.target.value
+						});
+					}}
+				/>
+				<button onClick={() => setIsEditing(false)}>Save</button>
+			</>
+		);
+	} else {
+		todoContent = (
+			<>
+				{todo.title}
+				<button onClick={() => setIsEditing(true)}>Edit</button>
+			</>
+		);
+	}
+	return (
+		<label>
+			<input
+				type="checkbox"
+				checked={todo.done}
+				onChange={(e: ChangeEvent<HTMLInputElement>) => {
+					onChange({
+						...todo,
+						done: e.target.checked
+					});
+				}}
+			/>
+			{todoContent}
+			<button onClick={() => onDelete(todo.id)}>Delete</button>
+		</label>
+	);
+}
 
-function Canvas(): ReactNode {
-	const [shape, setShape] = useImmer({
-		color: "orange",
-		position: initialPosition
-	});
+export default function TaskApp() {
+	const [tasks, dispatch] = useReducer<(todos: Todos[], action: Action) => Todos[]>(tasksReducer, initialTasks);
 
-	function handleMove(dx: number, dy: number): void {
-		setShape((draft) => {
-			(draft.position.x = dx), (draft.position.y = dy);
+	function handleAddTask(text: string) {
+		dispatch({
+			type: "added",
+			id: nextId++,
+			title: text
 		});
 	}
 
-	function handleColorChange(e: ChangeEvent<HTMLSelectElement>): void {
-		setShape((draftt) => {
-			draftt.color = e.target.value;
+	function handleChangeTask(task: Todos) {
+		dispatch({
+			type: "changed",
+			task: task
+		});
+	}
+
+	function handleDeleteTask(taskId: number) {
+		dispatch({
+			type: "deleted",
+			id: taskId
 		});
 	}
 
 	return (
 		<>
-			<select
-				value={shape.color}
-				onChange={handleColorChange}>
-				<option value="orange">orange</option>
-				<option value="lightpink">lightpink</option>
-				<option value="aliceblue">aliceblue</option>
-			</select>
-			<Background position={initialPosition} />
-			<Box
-				color={shape.color}
-				position={shape.position}
-				onMove={handleMove}>
-				Drag me!
-			</Box>
+			<h1>Prague itinerary</h1>
+			<AddTask onAddTask={handleAddTask} />
+			<TaskList
+				todos={tasks}
+				onChangeTask={handleChangeTask}
+				onDeleteTask={handleDeleteTask}
+			/>
 		</>
 	);
 }
 
-export default Canvas;
+function tasksReducer(todos: Todos[], action: Action): Todos[] {
+	switch (action.type) {
+		case "added": {
+			if (typeof action.id !== "undefined") {
+				return [
+					...todos,
+					{
+						id: action.id,
+						title: action.title!,
+						done: false
+					}
+				];
+			}
+			break;
+		}
+		case "changed": {
+			return todos
+				.map((t) => {
+					if (action.task && t.id === action.task.id) {
+						return action.task;
+					} else {
+						return t;
+					}
+				})
+				.filter((task) => task !== undefined) as Todos[];
+		}
+		case "deleted": {
+			return todos.filter((t) => t.id !== action.id);
+		}
+		default: {
+			throw Error("Unknown action: " + action.type);
+		}
+	}
+	return todos;
+}
+
+let nextId = 3;
+const initialTasks = [
+	{id: 0, title: "Visit Kafka Museum", done: true},
+	{id: 1, title: "Watch a puppet show", done: false},
+	{id: 2, title: "Lennon Wall pic", done: false}
+];
 
 // ----------------------------------------------------------------------------------
-
 // ----------------------------------------------------------------------------------
-
+// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
+// ----------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------

@@ -217,3 +217,45 @@ export interface Position {
 	x: number;
 	y: number;
 }
+
+export interface Shapes {
+	id: number;
+	type: string;
+	x: number;
+	y: number;
+}
+
+export interface Artists {
+	id: number;
+	name: string;
+}
+
+export interface ListPing {
+	id: number;
+	title: string;
+}
+
+export interface ListPong {
+	id: number;
+	title: string;
+	seen: boolean;
+}
+
+export interface Todos {
+	id: number;
+	title: string;
+	done: boolean;
+}
+
+export interface Chat {
+	name: string;
+	email: string;
+	text: string;
+}
+
+export interface Action {
+	type: string;
+	id?: number;
+	title?: string;
+	task?: Todos;
+}
