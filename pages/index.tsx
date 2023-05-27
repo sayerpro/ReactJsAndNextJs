@@ -5,7 +5,6 @@ import Avatar from "./hijos/Avatar";
 import produce from "immer";
 import Profiles from "./profiles/profiles";
 import {Engineer} from "./profiles/profile";
-import {HtmlHTMLAttributes, ReactElement, ReactNode} from "react";
 import {createRoot} from "react-dom/client";
 import biology from "../assets/AkliluLemma.jpg";
 import physician from "../assets/AlanL-Hart.jpg";
@@ -14,7 +13,25 @@ import scientits from "../assets/KatherineJohnson.jpg";
 import profilePic from "../assets/KatherineJohnson.jpg";
 import geochemist from "../assets/KatsukoSaruhashi.jpg";
 import {getImageUrls2, getImageUrls} from "./hijos/utils";
-import {Fragment, useState, FormEvent, ChangeEvent, MouseEventHandler, MouseEvent, PointerEvent, TouchEvent, Dispatch, SetStateAction, useReducer} from "react";
+import {
+	HtmlHTMLAttributes,
+	Context,
+	ReactElement,
+	ReactNode,
+	createContext,
+	useContext,
+	Fragment,
+	useState,
+	FormEvent,
+	ChangeEvent,
+	MouseEventHandler,
+	MouseEvent,
+	PointerEvent,
+	TouchEvent,
+	Dispatch,
+	SetStateAction,
+	useReducer
+} from "react";
 import {
 	Person,
 	Children,
@@ -2727,169 +2744,409 @@ import {
 
 // ----------------------------------------------------------------------------------
 
-function AddTask({onAddTask}: {onAddTask: (title: string) => void}): ReactElement {
-	const [title, setTitle] = useState<string>("");
-	return (
-		<>
-			<input
-				placeholder="Add todo"
-				value={title}
-				onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
-			/>
-			<button
-				onClick={() => {
-					setTitle("");
-					onAddTask(title);
-				}}>
-				Add
-			</button>
-		</>
-	);
-}
+// function AddTask({onAddTask}: {onAddTask: (title: string) => void}): ReactElement {
+// 	const [title, setTitle] = useState<string>("");
+// 	return (
+// 		<>
+// 			<input
+// 				placeholder="Add todo"
+// 				value={title}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+// 			/>
+// 			<button
+// 				onClick={() => {
+// 					setTitle("");
+// 					onAddTask(title);
+// 				}}>
+// 				Add
+// 			</button>
+// 		</>
+// 	);
+// }
 
-function TaskList({todos, onChangeTask, onDeleteTask}: {todos: Todos[]; onChangeTask: (tasks: Todos) => void; onDeleteTask: (todoId: number) => void}) {
-	return (
-		<ul>
-			{todos.map((todo: Todos) => (
-				<li key={todo.id}>
-					<Task
-						todo={todo}
-						onChange={onChangeTask}
-						onDelete={onDeleteTask}
-					/>
-				</li>
-			))}
-		</ul>
-	);
-}
+// function TaskList({todos, onChangeTask, onDeleteTask}: {todos: Todos[]; onChangeTask: (tasks: Todos) => void; onDeleteTask: (todoId: number) => void}) {
+// 	return (
+// 		<ul>
+// 			{todos.map((todo: Todos) => (
+// 				<li key={todo.id}>
+// 					<Task
+// 						todo={todo}
+// 						onChange={onChangeTask}
+// 						onDelete={onDeleteTask}
+// 					/>
+// 				</li>
+// 			))}
+// 		</ul>
+// 	);
+// }
 
-function Task({todo, onChange, onDelete}: {todo: Todos; onChange: (nextTodo: Todos) => void; onDelete: (todoId: number) => void}) {
-	const [isEditing, setIsEditing] = useState<boolean>(false);
-	let todoContent;
-	if (isEditing) {
-		todoContent = (
-			<>
-				<input
-					value={todo.title}
-					onChange={(e: ChangeEvent<HTMLInputElement>) => {
-						onChange({
-							...todo,
-							title: e.target.value
-						});
-					}}
-				/>
-				<button onClick={() => setIsEditing(false)}>Save</button>
-			</>
-		);
-	} else {
-		todoContent = (
-			<>
-				{todo.title}
-				<button onClick={() => setIsEditing(true)}>Edit</button>
-			</>
-		);
-	}
-	return (
-		<label>
-			<input
-				type="checkbox"
-				checked={todo.done}
-				onChange={(e: ChangeEvent<HTMLInputElement>) => {
-					onChange({
-						...todo,
-						done: e.target.checked
-					});
-				}}
-			/>
-			{todoContent}
-			<button onClick={() => onDelete(todo.id)}>Delete</button>
-		</label>
-	);
-}
+// function Task({todo, onChange, onDelete}: {todo: Todos; onChange: (nextTodo: Todos) => void; onDelete: (todoId: number) => void}) {
+// 	const [isEditing, setIsEditing] = useState<boolean>(false);
+// 	let todoContent;
+// 	if (isEditing) {
+// 		todoContent = (
+// 			<>
+// 				<input
+// 					value={todo.title}
+// 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 						onChange({
+// 							...todo,
+// 							title: e.target.value
+// 						});
+// 					}}
+// 				/>
+// 				<button onClick={() => setIsEditing(false)}>Save</button>
+// 			</>
+// 		);
+// 	} else {
+// 		todoContent = (
+// 			<>
+// 				{todo.title}
+// 				<button onClick={() => setIsEditing(true)}>Edit</button>
+// 			</>
+// 		);
+// 	}
+// 	return (
+// 		<label>
+// 			<input
+// 				type="checkbox"
+// 				checked={todo.done}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 					onChange({
+// 						...todo,
+// 						done: e.target.checked
+// 					});
+// 				}}
+// 			/>
+// 			{todoContent}
+// 			<button onClick={() => onDelete(todo.id)}>Delete</button>
+// 		</label>
+// 	);
+// }
 
-export default function TaskApp() {
-	const [tasks, dispatch] = useReducer<(todos: Todos[], action: Action) => Todos[]>(tasksReducer, initialTasks);
+// export default function TaskApp() {
+// 	const [tasks, dispatch] = useReducer<(todos: Todos[], action: Action) => Todos[]>(tasksReducer, initialTasks);
 
-	function handleAddTask(text: string) {
-		dispatch({
-			type: "added",
-			id: nextId++,
-			title: text
-		});
-	}
+// 	function handleAddTask(text: string) {
+// 		dispatch({
+// 			type: "added",
+// 			id: nextId++,
+// 			title: text
+// 		});
+// 	}
 
-	function handleChangeTask(task: Todos) {
-		dispatch({
-			type: "changed",
-			task: task
-		});
-	}
+// 	function handleChangeTask(task: Todos) {
+// 		dispatch({
+// 			type: "changed",
+// 			task: task
+// 		});
+// 	}
 
-	function handleDeleteTask(taskId: number) {
-		dispatch({
-			type: "deleted",
-			id: taskId
-		});
-	}
+// 	function handleDeleteTask(taskId: number) {
+// 		dispatch({
+// 			type: "deleted",
+// 			id: taskId
+// 		});
+// 	}
 
-	return (
-		<>
-			<h1>Prague itinerary</h1>
-			<AddTask onAddTask={handleAddTask} />
-			<TaskList
-				todos={tasks}
-				onChangeTask={handleChangeTask}
-				onDeleteTask={handleDeleteTask}
-			/>
-		</>
-	);
-}
+// 	return (
+// 		<>
+// 			<h1>Prague itinerary</h1>
+// 			<AddTask onAddTask={handleAddTask} />
+// 			<TaskList
+// 				todos={tasks}
+// 				onChangeTask={handleChangeTask}
+// 				onDeleteTask={handleDeleteTask}
+// 			/>
+// 		</>
+// 	);
+// }
 
-function tasksReducer(todos: Todos[], action: Action): Todos[] {
-	switch (action.type) {
-		case "added": {
-			if (typeof action.id !== "undefined") {
-				return [
-					...todos,
-					{
-						id: action.id,
-						title: action.title!,
-						done: false
-					}
-				];
-			}
-			break;
-		}
-		case "changed": {
-			return todos
-				.map((t) => {
-					if (action.task && t.id === action.task.id) {
-						return action.task;
-					} else {
-						return t;
-					}
-				})
-				.filter((task) => task !== undefined) as Todos[];
-		}
-		case "deleted": {
-			return todos.filter((t) => t.id !== action.id);
-		}
-		default: {
-			throw Error("Unknown action: " + action.type);
-		}
-	}
-	return todos;
-}
+// function tasksReducer(todos: Todos[], action: Action): Todos[] {
+// 	switch (action.type) {
+// 		case "added": {
+// 			if (typeof action.id !== "undefined") {
+// 				return [
+// 					...todos,
+// 					{
+// 						id: action.id,
+// 						title: action.title!,
+// 						done: false
+// 					}
+// 				];
+// 			}
+// 			break;
+// 		}
+// 		case "changed": {
+// 			return todos
+// 				.map((t) => {
+// 					if (action.task && t.id === action.task.id) {
+// 						return action.task;
+// 					} else {
+// 						return t;
+// 					}
+// 				})
+// 				.filter((task) => task !== undefined) as Todos[];
+// 		}
+// 		case "deleted": {
+// 			return todos.filter((t) => t.id !== action.id);
+// 		}
+// 		default: {
+// 			throw Error("Unknown action: " + action.type);
+// 		}
+// 	}
+// 	return todos;
+// }
 
-let nextId = 3;
-const initialTasks = [
-	{id: 0, title: "Visit Kafka Museum", done: true},
-	{id: 1, title: "Watch a puppet show", done: false},
-	{id: 2, title: "Lennon Wall pic", done: false}
-];
+// let nextId = 3;
+// const initialTasks = [
+// 	{id: 0, title: "Visit Kafka Museum", done: true},
+// 	{id: 1, title: "Watch a puppet show", done: false},
+// 	{id: 2, title: "Lennon Wall pic", done: false}
+// ];
 
 // ----------------------------------------------------------------------------------
+
+// function Page(): ReactNode {
+// 	return (
+// 		<Section>
+// 			<Heading>Title</Heading>
+// 			<Section>
+// 				<Heading>Heading</Heading>
+// 				<Heading>Heading</Heading>
+// 				<Heading>Heading</Heading>
+// 				<Section>
+// 					<Heading>Sub-heading</Heading>
+// 					<Heading>Sub-heading</Heading>
+// 					<Heading>Sub-heading</Heading>
+// 					<Section>
+// 						<Heading>Sub-sub-heading</Heading>
+// 						<Heading>Sub-sub-heading</Heading>
+// 						<Heading>Sub-sub-heading</Heading>
+// 						<Section>
+// 							<Heading>Sub-sub-heading</Heading>
+// 							<Heading>Sub-sub-heading</Heading>
+// 							<Heading>Sub-sub-heading</Heading>
+// 							<Section>
+// 								<Heading>Sub-sub-heading</Heading>
+// 								<Heading>Sub-sub-heading</Heading>
+// 								<Heading>Sub-sub-heading</Heading>
+// 							</Section>
+// 						</Section>
+// 					</Section>
+// 				</Section>
+// 			</Section>
+// 		</Section>
+// 	);
+// }
+
+// function Section({children}: {children: ReactNode}): ReactElement {
+// 	const level: number = useContext<number>(LevelContext);
+// 	return (
+// 		<section className="section">
+// 			<LevelContext.Provider value={level + 1}>{children}</LevelContext.Provider>
+// 		</section>
+// 	);
+// }
+
+// function Heading({children}: {children: ReactNode}): ReactElement {
+// 	const level: number = useContext<number>(LevelContext);
+// 	switch (level) {
+// 		case 0:
+// 			throw Error("Heading must be inside a Section!");
+// 		case 1:
+// 			return <h1>{children}</h1>;
+// 		case 2:
+// 			return <h2>{children}</h2>;
+// 		case 3:
+// 			return <h3>{children}</h3>;
+// 		case 4:
+// 			return <h4>{children}</h4>;
+// 		case 5:
+// 			return <h5>{children}</h5>;
+// 		case 6:
+// 			return <h6>{children}</h6>;
+// 		default:
+// 			throw Error("Unknown level: " + level);
+// 	}
+// }
+
+// const LevelContext: Context<number> = createContext<number>(0);
+
+// export default Page;
+
 // ----------------------------------------------------------------------------------
+
+// function TaskApp(): ReactNode {
+// 	return (
+// 		<TasksProvider>
+// 			<h1>Day off in Kyoto</h1>
+// 			<AddTask />
+// 			<TaskList />
+// 		</TasksProvider>
+// 	);
+// }
+
+// const TasksContext = createContext<Todos[]>([]);
+// const TasksDispatchContext = createContext<(action: Action) => void>(() => {});
+
+// function TasksProvider({children}: {children: ReactNode}): ReactElement {
+// 	const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
+
+// 	return (
+// 		<TasksContext.Provider value={tasks}>
+// 			<TasksDispatchContext.Provider value={dispatch}>{children}</TasksDispatchContext.Provider>
+// 		</TasksContext.Provider>
+// 	);
+// }
+
+// function useTasks() {
+// 	return useContext(TasksContext);
+// }
+
+// function useTasksDispatch() {
+// 	return useContext(TasksDispatchContext);
+// }
+
+// function tasksReducer(tasks: Todos[], action: Action): Todos[] {
+// 	switch (action.type) {
+// 		case "added": {
+// 			return [
+// 				...tasks,
+// 				{
+// 					id: action.id!,
+// 					title: action.title!,
+// 					done: false
+// 				}
+// 			];
+// 		}
+// 		case "changed": {
+// 			return tasks
+// 				.map((t: Todos) => {
+// 					if (action.task && t.id === action.task.id) {
+// 						return action.task;
+// 					} else {
+// 						return t;
+// 					}
+// 				})
+// 				.filter((task: Todos) => task !== undefined) as Todos[];
+// 		}
+// 		case "deleted": {
+// 			return tasks.filter((t: Todos) => t.id !== action.id);
+// 		}
+// 		default: {
+// 			throw Error("Unknown action: " + action.type);
+// 		}
+// 	}
+// }
+
+// const initialTasks = [
+// 	{id: 0, title: "PhilosopherU+2019s Path", done: true},
+// 	{id: 1, title: "Visit the temple", done: false},
+// 	{id: 2, title: "Drink matcha", done: false}
+// ];
+
+// function AddTask(): ReactElement {
+// 	const [title, setTitle] = useState<string>("");
+// 	const dispatch = useTasksDispatch();
+// 	return (
+// 		<>
+// 			<input
+// 				placeholder="Add task"
+// 				value={title}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+// 			/>
+// 			<button
+// 				onClick={() => {
+// 					setTitle("");
+// 					dispatch({
+// 						type: "added",
+// 						id: nextId++,
+// 						title: title
+// 					});
+// 				}}>
+// 				Add
+// 			</button>
+// 		</>
+// 	);
+// }
+
+// let nextId: number = 3;
+
+// function TaskList(): ReactElement {
+// 	const tasks = useTasks();
+// 	return (
+// 		<ul>
+// 			{tasks.map((task: Todos) => (
+// 				<li key={task.id}>
+// 					<Task task={task} />
+// 				</li>
+// 			))}
+// 		</ul>
+// 	);
+// }
+
+// function Task({task}: {task: Todos}): ReactElement {
+// 	const [isEditing, setIsEditing] = useState<boolean>(false);
+// 	const dispatch = useTasksDispatch();
+// 	let taskContent: ReactElement;
+// 	if (isEditing) {
+// 		taskContent = (
+// 			<>
+// 				<input
+// 					value={task.title}
+// 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 						dispatch({
+// 							type: "changed",
+// 							task: {
+// 								...task,
+// 								title: e.target.value
+// 							}
+// 						});
+// 					}}
+// 				/>
+// 				<button onClick={() => setIsEditing(false)}>Save</button>
+// 			</>
+// 		);
+// 	} else {
+// 		taskContent = (
+// 			<>
+// 				{task.title}
+// 				<button onClick={() => setIsEditing(true)}>Edit</button>
+// 			</>
+// 		);
+// 	}
+// 	return (
+// 		<label>
+// 			<input
+// 				type="checkbox"
+// 				checked={task.done}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 					dispatch({
+// 						type: "changed",
+// 						task: {
+// 							...task,
+// 							done: e.target.checked
+// 						}
+// 					});
+// 				}}
+// 			/>
+// 			{taskContent}
+// 			<button
+// 				onClick={() => {
+// 					dispatch({
+// 						type: "deleted",
+// 						id: task.id
+// 					});
+// 				}}>
+// 				Delete
+// 			</button>
+// 		</label>
+// 	);
+// }
+
+// export default TaskApp;
+
 // ----------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------
