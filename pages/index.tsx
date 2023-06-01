@@ -52,7 +52,12 @@ import {
 	ListPong,
 	Todos,
 	Chat,
-	Action
+	Action,
+	TravelPlan,
+	initialTravelPlan,
+	TravelPlanChilds,
+	Letter,
+	initialLetters
 } from "./models/models";
 
 // ----------------------------------------------------------------------------------
@@ -3148,6 +3153,429 @@ import {
 // export default TaskApp;
 
 // ----------------------------------------------------------------------------------
+
+// function Picture(): ReactNode {
+// 	const [isActive, setIsActive] = useState<boolean>(false);
+// 	if (isActive) {
+// 		return (
+// 			<div
+// 				className="background"
+// 				onClick={() => setIsActive(false)}>
+// 				<Image
+// 					className="picture picture--active"
+// 					alt="Rainbow houses in Kampung Pelangi, Indonesia"
+// 					src="https://i.imgur.com/5qwVYb1.jpeg"
+// 					height={300}
+// 					width={300}
+// 					onClick={(e: MouseEvent<HTMLImageElement>) => e.stopPropagation()}
+// 				/>
+// 			</div>
+// 		);
+// 	}
+// 	return (
+// 		<div className="background background--active">
+// 			<Image
+// 				className="picture"
+// 				alt="Rainbow houses in Kampung Pelangi, Indonesia"
+// 				src="https://i.imgur.com/5qwVYb1.jpeg"
+// 				height={300}
+// 				width={300}
+// 				onClick={() => setIsActive(true)}
+// 			/>
+// 		</div>
+// 	);
+// }
+
+// export default Picture;
+
 // ----------------------------------------------------------------------------------
+
+// function EditProfile(): ReactNode {
+// 	const [name, setName] = useState<string>("");
+// 	const [lastName, setLastName] = useState<string>("");
+// 	const [editing, setEditing] = useState<boolean>(false);
+// 	const labelName = <b>{name}</b>;
+// 	const labelLastName = <b>{lastName}</b>;
+// 	const inputName = (
+// 		<input
+// 			onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 				setName(e.target.value);
+// 			}}
+// 			placeholder="Name"
+// 			value={name}
+// 		/>
+// 	);
+// 	const inputLastName = (
+// 		<input
+// 			onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 				setLastName(e.target.value);
+// 			}}
+// 			placeholder="Last Name"
+// 			value={lastName}
+// 		/>
+// 	);
+
+// 	return (
+// 		<form>
+// 			<label>First name: {editing ? inputName : labelName}</label>
+// 			<label>Last name: {editing ? inputLastName : labelLastName}</label>
+
+// 			<button
+// 				type="submit"
+// 				onClick={(e: MouseEvent<HTMLButtonElement>) => {
+// 					e.preventDefault();
+// 					setEditing(!editing);
+// 				}}>
+// 				{editing ? "Save Profile" : "Edit Profile"}
+// 			</button>
+// 			<p>
+// 				<i>Hello, {name + " " + lastName}!</i>
+// 			</p>
+// 		</form>
+// 	);
+// }
+
+// export default EditProfile;
+
 // ----------------------------------------------------------------------------------
+
+// const initialItems: ListPing[] = [
+// 	{title: "pretzels", id: 0},
+// 	{title: "crispy seaweed", id: 1},
+// 	{title: "granola bar", id: 2}
+// ];
+
+// function Menu(): ReactNode {
+// 	const [items, setItems] = useState<ListPing[]>(initialItems);
+// 	const [selectedId, setSelectedId] = useState<number>(0);
+
+// 	const selectedItem: ListPing | undefined = items.find((item: ListPing) => item.id === selectedId);
+
+// 	function handleItemChange(id: number, e: ChangeEvent<HTMLInputElement>): void {
+// 		setItems(
+// 			items.map((item: ListPing) => {
+// 				if (item.id === id) {
+// 					return {
+// 						...item,
+// 						title: e.target.value
+// 					};
+// 				} else {
+// 					return item;
+// 				}
+// 			})
+// 		);
+// 	}
+
+// 	return (
+// 		<>
+// 			<h2>What&apos;s your travel snack?</h2>
+// 			<ul>
+// 				{items.map((item: ListPing, index: number) => (
+// 					<li key={item.id}>
+// 						<input
+// 							value={item.title}
+// 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 								handleItemChange(item.id, e);
+// 							}}
+// 						/>{" "}
+// 						<button
+// 							onClick={() => {
+// 								setSelectedId(item.id);
+// 							}}>
+// 							Choose
+// 						</button>
+// 					</li>
+// 				))}
+// 			</ul>
+// 			<p>You picked {selectedItem ? selectedItem.title : "Any"}.</p>
+// 		</>
+// 	);
+// }
+
+// export default Menu;
+
+// ----------------------------------------------------------------------------------
+
+// function TravelPlan(): ReactNode {
+// 	const [plan, setPlan] = useState<TravelPlan>(initialTravelPlan);
+
+// 	function handleComplete(parentId: number, childId: number): void {
+// 		const parent = plan[parentId];
+// 		const nextParent = {
+// 			...parent,
+// 			childIds: parent.childIds.filter((id: number) => id !== childId)
+// 		};
+// 		setPlan({
+// 			...plan,
+// 			[parentId]: nextParent
+// 		});
+// 	}
+
+// 	const root: TravelPlanChilds = plan[0];
+// 	const planetIds: number[] = root.childIds;
+// 	return (
+// 		<>
+// 			<h2>Places to visit</h2>
+// 			<ol>
+// 				{planetIds.map((id: number) => (
+// 					<PlaceTree
+// 						key={id}
+// 						id={id}
+// 						parentId={0}
+// 						placesById={plan}
+// 						onComplete={handleComplete}
+// 					/>
+// 				))}
+// 			</ol>
+// 		</>
+// 	);
+// }
+
+// function PlaceTree({
+// 	id,
+// 	parentId,
+// 	placesById,
+// 	onComplete
+// }: {
+// 	id: number;
+// 	parentId: number;
+// 	placesById: TravelPlan;
+// 	onComplete: (parentId: number, childId: number) => void;
+// }): ReactElement {
+// 	const place: TravelPlanChilds = placesById[id];
+// 	const childIds: number[] = place.childIds;
+// 	return (
+// 		<li>
+// 			{place.title}
+// 			<button
+// 				onClick={() => {
+// 					onComplete(parentId, id);
+// 				}}>
+// 				Complete
+// 			</button>
+// 			{childIds.length > 0 && (
+// 				<ol>
+// 					{childIds.map((childId: number) => (
+// 						<PlaceTree
+// 							key={childId}
+// 							id={childId}
+// 							parentId={id}
+// 							placesById={placesById}
+// 							onComplete={onComplete}
+// 						/>
+// 					))}
+// 				</ol>
+// 			)}
+// 		</li>
+// 	);
+// }
+
+// export default TravelPlan;
+
+// ----------------------------------------------------------------------------------
+
+// function TravelPlan() {
+// 	const [plan, updatePlan] = useImmer<TravelPlan>(initialTravelPlan);
+
+// 	function handleComplete(parentId: number, childId: number): void {
+// 		updatePlan((draft) => {
+// 			const parent: TravelPlanChilds = draft[parentId];
+// 			parent.childIds = parent.childIds.filter((id: number) => id !== childId);
+
+// 			deleteAllChildren(childId);
+// 			function deleteAllChildren(id: number) {
+// 				const place = draft[id];
+// 				place.childIds.forEach(deleteAllChildren);
+// 				delete draft[id];
+// 			}
+// 		});
+// 	}
+
+// 	const root: TravelPlanChilds = plan[0];
+// 	const planetIds: number[] = root.childIds;
+// 	return (
+// 		<>
+// 			<h2>Places to visit</h2>
+// 			<ol>
+// 				{planetIds.map((id: number) => (
+// 					<PlaceTree
+// 						key={id}
+// 						id={id}
+// 						parentId={0}
+// 						placesById={plan}
+// 						onComplete={handleComplete}
+// 					/>
+// 				))}
+// 			</ol>
+// 		</>
+// 	);
+// }
+
+// function PlaceTree({id, parentId, placesById, onComplete}: {id: number; parentId: number; placesById: TravelPlan; onComplete: (parentId: number, childId: number) => void}) {
+// 	const place: TravelPlanChilds = placesById[id];
+// 	const childIds: number[] = place.childIds;
+// 	return (
+// 		<li>
+// 			{place.title}
+// 			<button
+// 				onClick={() => {
+// 					onComplete(parentId, id);
+// 				}}>
+// 				Complete
+// 			</button>
+// 			{childIds.length > 0 && (
+// 				<ol>
+// 					{childIds.map((childId: number) => (
+// 						<PlaceTree
+// 							key={childId}
+// 							id={childId}
+// 							parentId={id}
+// 							placesById={placesById}
+// 							onComplete={onComplete}
+// 						/>
+// 					))}
+// 				</ol>
+// 			)}
+// 		</li>
+// 	);
+// }
+
+// export default TravelPlan;
+
+// ----------------------------------------------------------------------------------
+
+// function MailClient(): ReactNode {
+// 	const [letters, setLetters] = useState<Letter[]>(initialLetters);
+// 	const [highlightedId, setHighlightedId] = useState<number | null>(null);
+
+// 	function handleHover(letter: number) {
+// 		setHighlightedId(letter);
+// 	}
+
+// 	function handleStar(starred: Letter): void {
+// 		setLetters(
+// 			letters.map((letter: Letter) => {
+// 				if (letter.id === starred.id) {
+// 					return {
+// 						...letter,
+// 						isStarred: !letter.isStarred
+// 					};
+// 				} else {
+// 					return letter;
+// 				}
+// 			})
+// 		);
+// 	}
+
+// 	return (
+// 		<>
+// 			<h2>Inbox</h2>
+// 			<ul>
+// 				{letters.map((letter: Letter) => (
+// 					<Letter
+// 						key={letter.id}
+// 						letter={letter}
+// 						isHighlighted={letter.id === highlightedId}
+// 						onHover={handleHover}
+// 						onToggleStar={handleStar}
+// 					/>
+// 				))}
+// 			</ul>
+// 		</>
+// 	);
+// }
+
+// function Letter({
+// 	letter,
+// 	isHighlighted,
+// 	onHover,
+// 	onToggleStar
+// }: {
+// 	letter: Letter;
+// 	isHighlighted: boolean;
+// 	onHover: (letterId: number) => void;
+// 	onToggleStar: (starred: Letter) => void;
+// }) {
+// 	return (
+// 		<li
+// 			className={isHighlighted ? "highlighted" : ""}
+// 			onFocus={() => {
+// 				onHover(letter.id);
+// 			}}
+// 			onPointerMove={() => {
+// 				onHover(letter.id);
+// 			}}>
+// 			<button
+// 				onClick={() => {
+// 					onToggleStar(letter);
+// 				}}>
+// 				{letter.isStarred ? "Unstar" : "Star"}
+// 			</button>
+// 			{letter.subject}
+// 		</li>
+// 	);
+// }
+
+// export default MailClient;
+
+// ----------------------------------------------------------------------------------
+
+function MailClient(): ReactNode {
+	const [letters, setLetters] = useState<Letter[]>(initialLetters);
+	const [selectedCount, setSelectedCount] = useState(1);
+
+	function handleToggle(letter: Letter) {
+		setLetters((draft) => {
+			return draft.map((l: Letter) => {
+				if (l.id === letter.id) {
+					l.isStarred ? setSelectedCount((prevCount) => prevCount - 1) : setSelectedCount((prevCount) => prevCount + 1);
+					return {...l, isStarred: !l.isStarred};
+				}
+				return l;
+			});
+		});
+	}
+
+	return (
+		<>
+			<h2>Inbox</h2>
+			<ul>
+				{letters.map((letter: Letter) => (
+					<Letter
+						key={letter.id}
+						letter={letter}
+						isSelected={letter.isStarred}
+						onToggle={handleToggle}
+					/>
+				))}
+				<hr />
+				<p>
+					<b>You selected {selectedCount} letters</b>
+				</p>
+			</ul>
+		</>
+	);
+}
+
+function Letter({letter, onToggle, isSelected}: {letter: Letter; onToggle: (letter: Letter) => void; isSelected: boolean}): ReactElement {
+	return (
+		<li className={isSelected ? "selected" : ""}>
+			<label>
+				<input
+					type="checkbox"
+					checked={isSelected}
+					onChange={() => {
+						onToggle(letter);
+					}}
+				/>
+				{letter.subject}
+			</label>
+		</li>
+	);
+}
+
+export default MailClient;
+
+// ----------------------------------------------------------------------------------
+
 // ----------------------------------------------------------------------------------
