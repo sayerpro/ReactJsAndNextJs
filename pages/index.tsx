@@ -57,7 +57,10 @@ import {
 	initialTravelPlan,
 	TravelPlanChilds,
 	Letter,
-	initialLetters
+	initialLetters,
+	foods,
+	filterItems,
+	Food
 } from "./models/models";
 
 // ----------------------------------------------------------------------------------
@@ -3520,61 +3523,191 @@ import {
 
 // ----------------------------------------------------------------------------------
 
-function MailClient(): ReactNode {
-	const [letters, setLetters] = useState<Letter[]>(initialLetters);
-	const [selectedCount, setSelectedCount] = useState(1);
+// function MailClient(): ReactNode {
+// 	const [letters, setLetters] = useState<Letter[]>(initialLetters);
+// 	const [selectedCount, setSelectedCount] = useState(1);
 
-	function handleToggle(letter: Letter) {
-		setLetters((draft) => {
-			return draft.map((l: Letter) => {
-				if (l.id === letter.id) {
-					l.isStarred ? setSelectedCount((prevCount) => prevCount - 1) : setSelectedCount((prevCount) => prevCount + 1);
-					return {...l, isStarred: !l.isStarred};
-				}
-				return l;
-			});
-		});
-	}
+// 	function handleToggle(letter: Letter) {
+// 		setLetters((draft) => {
+// 			return draft.map((l: Letter) => {
+// 				if (l.id === letter.id) {
+// 					l.isStarred ? setSelectedCount((prevCount) => prevCount - 1) : setSelectedCount((prevCount) => prevCount + 1);
+// 					return {...l, isStarred: !l.isStarred};
+// 				}
+// 				return l;
+// 			});
+// 		});
+// 	}
 
-	return (
-		<>
-			<h2>Inbox</h2>
-			<ul>
-				{letters.map((letter: Letter) => (
-					<Letter
-						key={letter.id}
-						letter={letter}
-						isSelected={letter.isStarred}
-						onToggle={handleToggle}
-					/>
-				))}
-				<hr />
-				<p>
-					<b>You selected {selectedCount} letters</b>
-				</p>
-			</ul>
-		</>
-	);
-}
+// 	return (
+// 		<>
+// 			<h2>Inbox</h2>
+// 			<ul>
+// 				{letters.map((letter: Letter) => (
+// 					<Letter
+// 						key={letter.id}
+// 						letter={letter}
+// 						isSelected={letter.isStarred}
+// 						onToggle={handleToggle}
+// 					/>
+// 				))}
+// 				<hr />
+// 				<p>
+// 					<b>You selected {selectedCount} letters</b>
+// 				</p>
+// 			</ul>
+// 		</>
+// 	);
+// }
 
-function Letter({letter, onToggle, isSelected}: {letter: Letter; onToggle: (letter: Letter) => void; isSelected: boolean}): ReactElement {
-	return (
-		<li className={isSelected ? "selected" : ""}>
-			<label>
-				<input
-					type="checkbox"
-					checked={isSelected}
-					onChange={() => {
-						onToggle(letter);
-					}}
-				/>
-				{letter.subject}
-			</label>
-		</li>
-	);
-}
+// function Letter({letter, onToggle, isSelected}: {letter: Letter; onToggle: (letter: Letter) => void; isSelected: boolean}): ReactElement {
+// 	return (
+// 		<li className={isSelected ? "selected" : ""}>
+// 			<label>
+// 				<input
+// 					type="checkbox"
+// 					checked={isSelected}
+// 					onChange={() => {
+// 						onToggle(letter);
+// 					}}
+// 				/>
+// 				{letter.subject}
+// 			</label>
+// 		</li>
+// 	);
+// }
 
-export default MailClient;
+// export default MailClient;
+
+// ----------------------------------------------------------------------------------
+
+// function Accordion(): ReactNode {
+// 	const [activeIndex, setActiveIndex] = useState<number>(0);
+// 	return (
+// 		<>
+// 			<h2>Almaty, Kazakhstan</h2>
+// 			<Panel
+// 				title="About"
+// 				isActive={activeIndex === 0}
+// 				onShow={() => setActiveIndex(0)}>
+// 				With a population of about 2 million, Almaty is Kazakhstan's largest city. From 1929 to 1997, it was its capital city.
+// 			</Panel>
+// 			<Panel
+// 				title="Etymology"
+// 				isActive={activeIndex === 1}
+// 				onShow={() => setActiveIndex(1)}>
+// 				The name comes from <span lang="kk-KZ">алма</span>, the Kazakh word for "apple" and is often translated as "full of apples". In fact, the region surrounding Almaty is
+// 				thought to be the ancestral home of the apple, and the wild <i lang="la">Malus sieversii</i> is considered a likely candidate for the ancestor of the modern domestic apple.
+// 			</Panel>
+// 		</>
+// 	);
+// }
+
+// function Panel({title, children, isActive, onShow}: {title: string; children: ReactNode; isActive: boolean; onShow: () => void}): ReactElement {
+// 	return (
+// 		<section className="panel">
+// 			<h3>{title}</h3>
+// 			{isActive ? <p>{children}</p> : <button onClick={onShow}>Show</button>}
+// 		</section>
+// 	);
+// }
+
+// export default Accordion;
+
+// ----------------------------------------------------------------------------------
+
+// function SyncedInputs(): ReactNode {
+// 	const [text, setText] = useState<string>("");
+
+// 	function handleChange(e: ChangeEvent<HTMLInputElement>): void {
+// 		setText(e.target.value);
+// 	}
+// 	return (
+// 		<>
+// 			<Input
+// 				label="First input"
+// 				value={handleChange}
+// 				text={text}
+// 			/>
+// 			<Input
+// 				label="Second input"
+// 				value={handleChange}
+// 				text={text}
+// 			/>
+// 		</>
+// 	);
+// }
+
+// function Input({label, value, text}: {label: ReactNode; value: (e: ChangeEvent<HTMLInputElement>) => void; text: string}): ReactElement {
+// 	return (
+// 		<label>
+// 			{label}{" "}
+// 			<input
+// 				value={text}
+// 				onChange={value}
+// 			/>
+// 		</label>
+// 	);
+// }
+
+// export default SyncedInputs;
+
+// ----------------------------------------------------------------------------------
+
+// function FilterableList(): ReactNode {
+// 	const [query, setQuery] = useState<string>("");
+
+// 	function handleChange(e: ChangeEvent<HTMLInputElement>) {
+// 		setQuery(e.target.value);
+// 	}
+// 	return (
+// 		<>
+// 			<SearchBar
+// 				onChange={handleChange}
+// 				query={query}
+// 			/>
+// 			<hr />
+// 			<List items={filterItems(foods, query)} />
+// 		</>
+// 	);
+// }
+
+// function SearchBar({onChange, query}: {onChange: (e: ChangeEvent<HTMLInputElement>) => void; query: string}): ReactElement {
+// 	return (
+// 		<label>
+// 			Search:{" "}
+// 			<input
+// 				value={query}
+// 				onChange={onChange}
+// 			/>
+// 		</label>
+// 	);
+// }
+
+// function List({items}: {items: Food[]}): ReactElement {
+// 	return (
+// 		<table>
+// 			<tbody>
+// 				{items.map((food: Food) => (
+// 					<tr key={food.id}>
+// 						<td>{food.name}</td>
+// 						<td>{food.description}</td>
+// 					</tr>
+// 				))}
+// 			</tbody>
+// 		</table>
+// 	);
+// }
+
+// export default FilterableList;
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------
 
