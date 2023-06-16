@@ -60,7 +60,11 @@ import {
 	initialLetters,
 	foods,
 	filterItems,
-	Food
+	Food,
+	Contact,
+	initialContacts,
+	DataImg,
+	images
 } from "./models/models";
 
 // ----------------------------------------------------------------------------------
@@ -3700,6 +3704,357 @@ import {
 // }
 
 // export default FilterableList;
+
+// ----------------------------------------------------------------------------------
+
+// function App(): ReactNode {
+// 	const counter: ReactElement = <Counter />;
+// 	return (
+// 		<div>
+// 			{counter}
+// 			{counter}
+// 		</div>
+// 	);
+// }
+
+// function Counter(): ReactElement {
+// 	const [score, setScore] = useState<number>(0);
+// 	const [hover, setHover] = useState<boolean>(false);
+
+// 	let className: string = "counter";
+// 	if (hover) {
+// 		className += " hover";
+// 	}
+
+// 	return (
+// 		<div
+// 			className={className}
+// 			onPointerEnter={() => setHover(true)}
+// 			onPointerLeave={() => setHover(false)}>
+// 			<h1>{score}</h1>
+// 			<button onClick={() => setScore(score + 1)}>Add one</button>
+// 		</div>
+// 	);
+// }
+
+// export default App;
+
+// ----------------------------------------------------------------------------------
+
+// function App(): ReactNode {
+// 	const [showHint, setShowHint] = useState<boolean>(false);
+// 	const [text, setText] = useState<string>("");
+
+// 	function saveText(text: string) {
+// 		setText(text);
+// 	}
+
+// 	if (showHint) {
+// 		return (
+// 			<div>
+// 				<p>
+// 					<i>Hint: Your favorite city?</i>
+// 				</p>
+// 				<Form
+// 					text={text}
+// 					saveText={setText}
+// 				/>
+// 				<button
+// 					onClick={() => {
+// 						setShowHint(false);
+// 					}}>
+// 					Hide hint
+// 				</button>
+// 			</div>
+// 		);
+// 	}
+// 	return (
+// 		<div>
+// 			<Form
+// 				text={text}
+// 				saveText={setText}
+// 			/>
+// 			<button
+// 				onClick={() => {
+// 					setShowHint(true);
+// 				}}>
+// 				Show hint
+// 			</button>
+// 		</div>
+// 	);
+// }
+
+// function Form({text, saveText}: {text: string; saveText: (text: string) => void}) {
+// 	return (
+// 		<textarea
+// 			value={text}
+// 			onChange={(e: ChangeEvent<HTMLTextAreaElement>) => saveText(e.target.value)}
+// 		/>
+// 	);
+// }
+
+// export default App;
+
+// ----------------------------------------------------------------------------------
+
+// function App(): ReactNode {
+// 	const [reverse, setReverse] = useState<boolean>(false);
+// 	let checkbox: ReactElement = (
+// 		<label>
+// 			<input
+// 				type="checkbox"
+// 				checked={reverse}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => setReverse(e.target.checked)}
+// 			/>
+// 			Reverse order
+// 		</label>
+// 	);
+// 	if (reverse) {
+// 		return (
+// 			<>
+// 				<Field
+// 					key="last name"
+// 					label="Last name"
+// 				/>
+// 				<Field
+// 					key="first nane"
+// 					label="First name"
+// 				/>
+// 				{checkbox}
+// 			</>
+// 		);
+// 	} else {
+// 		return (
+// 			<>
+// 				<Field
+// 					key="first nane"
+// 					label="First name"
+// 				/>
+// 				<Field
+// 					key="last name"
+// 					label="Last name"
+// 				/>
+// 				{checkbox}
+// 			</>
+// 		);
+// 	}
+// }
+
+// function Field({label}: {label: string}): ReactElement {
+// 	const [text, setText] = useState<string>("");
+// 	return (
+// 		<label>
+// 			{label}:{" "}
+// 			<input
+// 				type="text"
+// 				value={text}
+// 				placeholder={label}
+// 				onChange={(e: ChangeEvent<HTMLInputElement>) => setText(e.target.value)}
+// 			/>
+// 		</label>
+// 	);
+// }
+
+// export default App;
+
+// ----------------------------------------------------------------------------------
+
+// function ContactManager(): ReactNode {
+// 	const [contacts, setContacts] = useState<Contact[]>(initialContacts);
+// 	const [selectedId, setSelectedId] = useState<number>(0);
+// 	const selectedContact = contacts.find((c: Contact) => c.id === selectedId);
+
+// 	function handleSave(updatedData: Contact): void {
+// 		const nextContacts = contacts.map((c: Contact) => {
+// 			if (c.id === updatedData.id) {
+// 				return updatedData;
+// 			} else {
+// 				return c;
+// 			}
+// 		});
+// 		setContacts(nextContacts);
+// 	}
+
+// 	return (
+// 		<div>
+// 			<ContactList
+// 				contacts={contacts}
+// 				selectedId={selectedId}
+// 				onSelect={(id: number) => setSelectedId(id)}
+// 			/>
+// 			<hr />
+// 			<EditContact
+// 				key={selectedId}
+// 				initialData={selectedContact!}
+// 				onSave={handleSave}
+// 			/>
+// 		</div>
+// 	);
+// }
+
+// function ContactList({contacts, selectedId, onSelect}: {contacts: Contact[]; selectedId: number; onSelect: (id: number) => void}): ReactElement {
+// 	return (
+// 		<section>
+// 			<ul>
+// 				{contacts.map((contact: Contact) => (
+// 					<li key={contact.id}>
+// 						<button
+// 							onClick={() => {
+// 								onSelect(contact.id);
+// 							}}>
+// 							{contact.id === selectedId ? <b>{contact.name}</b> : contact.name}
+// 						</button>
+// 					</li>
+// 				))}
+// 			</ul>
+// 		</section>
+// 	);
+// }
+
+// function EditContact({initialData, onSave}: {initialData: Contact; onSave: (updatedData: Contact) => void}): ReactElement {
+// 	const [name, setName] = useState<string>(initialData.name);
+// 	const [email, setEmail] = useState<string>(initialData.email);
+// 	return (
+// 		<section>
+// 			<label>
+// 				Name:{" "}
+// 				<input
+// 					type="text"
+// 					value={name}
+// 					onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
+// 				/>
+// 			</label>
+// 			<label>
+// 				Email:{" "}
+// 				<input
+// 					type="email"
+// 					value={email}
+// 					onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+// 				/>
+// 			</label>
+// 			<button
+// 				onClick={() => {
+// 					const updatedData: Contact = {
+// 						id: initialData.id,
+// 						name: name,
+// 						email: email
+// 					};
+// 					onSave(updatedData);
+// 				}}>
+// 				Save
+// 			</button>
+// 			<button
+// 				onClick={() => {
+// 					setName(initialData.name);
+// 					setEmail(initialData.email);
+// 				}}>
+// 				Reset
+// 			</button>
+// 		</section>
+// 	);
+// }
+
+// export default ContactManager;
+// ----------------------------------------------------------------------------------
+
+// function Gallery(): ReactNode {
+// 	const [index, setIndex] = useState<number>(0);
+// 	const hasNext: boolean = index < images.length - 1;
+
+// 	function handleClick(): void {
+// 		if (hasNext) {
+// 			setIndex(index + 1);
+// 		} else {
+// 			setIndex(0);
+// 		}
+// 	}
+
+// 	let image: DataImg = images[index];
+// 	return (
+// 		<>
+// 			<button onClick={handleClick}>Next</button>
+// 			<h3>
+// 				Image {index + 1} of {images.length}
+// 			</h3>
+// 			<Image
+// 				key={index}
+// 				alt={image.place}
+// 				src={image.src}
+// 				width={300}
+// 				height={300}
+// 			/>
+// 			<p>{image.place}</p>
+// 		</>
+// 	);
+// }
+
+// export default Gallery;
+
+// ----------------------------------------------------------------------------------
+
+// function ContactList(): ReactNode {
+// 	const [reverse, setReverse] = useState<boolean>(false);
+
+// 	const displayedContacts: Contact[] = [...initialContacts];
+// 	if (reverse) {
+// 		displayedContacts.reverse();
+// 	}
+
+// 	return (
+// 		<>
+// 			<label>
+// 				<input
+// 					type="checkbox"
+// 					onChange={(e: ChangeEvent<HTMLInputElement>) => {
+// 						setReverse(e.target.checked);
+// 					}}
+// 				/>{" "}
+// 				Show in reverse order
+// 			</label>
+// 			<ul>
+// 				{displayedContacts.map((contact: Contact, i: number) => (
+// 					<li key={contact.id}>
+// 						<Contact contact={contact} />
+// 					</li>
+// 				))}
+// 			</ul>
+// 		</>
+// 	);
+// }
+
+// function Contact({contact}: {contact: Contact}): ReactElement {
+// 	const [expanded, setExpanded] = useState<boolean>(false);
+// 	return (
+// 		<>
+// 			<p>
+// 				<b>{contact.name}</b>
+// 			</p>
+// 			{expanded && (
+// 				<p>
+// 					<i>{contact.email}</i>
+// 				</p>
+// 			)}
+// 			<button
+// 				onClick={() => {
+// 					setExpanded(!expanded);
+// 				}}>
+// 				{expanded ? "Hide" : "Show"} email
+// 			</button>
+// 		</>
+// 	);
+// }
+
+// export default ContactList;
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------------
 
